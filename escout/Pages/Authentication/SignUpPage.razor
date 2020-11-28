@@ -1,0 +1,98 @@
+﻿@if (isLoading)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="center">
+        <EditForm Model="@user" OnValidSubmit="@SignUpClicked">
+            <div class="row justify-content-start">
+                <div class="col-3">
+                    <label>Username:</label>
+                </div>
+                <div class="col-2">
+                    <InputText @bind-Value="user.Username" placeholder="username" class="rounded" />
+                    &nbsp;<ValidationMessage For="@(() => user.Username)" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-3">
+                    <label>E-mail:</label>
+                </div>
+                <div class="col-2">
+                    <InputText @bind-Value="user.Email" placeholder="user@email.com" class="rounded" />
+                    &nbsp;<ValidationMessage For="@(() => user.Email)" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-3">
+                    <label>Password:</label>
+                </div>
+                <div class="col-2">
+                    <InputText @bind-Value="user.Password" placeholder="password" Type="password" class="rounded" />
+                    &nbsp;<ValidationMessage For="@(() => user.Password)" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-3">
+                    <label>Repeat Password:</label>
+                </div>
+                <div class="col-2">
+                    <InputText @bind-Value="user.PasswordConfirmation" placeholder="password" Type="password" class="rounded" />
+                    &nbsp;<ValidationMessage For="@(() => user.Password)" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-3">
+                    <label>Notifications:</label>
+                </div>
+                <div class="col-2">
+                    <InputCheckbox @bind-Value="isNotifications" class="rounded" />
+                </div>
+            </div>
+            <br />
+            <div>
+                <button class="btn btn-primary" value="Save">Save</button>
+                <span>&nbsp;</span>
+                <button @onclick="Cancel" class="btn btn-secondary" value="Clear">Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    private bool isLoading = false;
+    public bool isNotifications = true;
+    public User user { get; set; }
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    void Cancel() => BlazoredModal.Cancel();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Console.WriteLine("SignUp - OnInitialized");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Console.WriteLine("SignUp - OnInitializedAsync");
+        user = new User();
+    }
+    private async Task SignUpClicked()
+    {
+        isLoading = true;
+        var result = await new escout.Services.AuthenticationService().SignUpExecuted(user, isNotifications);
+        if (result)
+        {
+            toastService.ShowToast(ToastLevel.Success,@<text>your account was successfully created.</text>);
+            await BlazoredModal.Close(ModalResult.Ok(true));
+        }
+        else
+            toastService.ShowToast(ToastLevel.Error,@<text>Error!</text>);
+        
+        isLoading = false;
+    }
+}

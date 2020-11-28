@@ -1,0 +1,48 @@
+﻿@inherits LayoutComponentBase
+
+<div class="sidebar">
+    <NavMenu />
+</div>
+
+<div class="main">
+    <div class="top-row px-4">
+        <button @onclick="SignOutClicked" class="btn btn-dark">Sign Out</button>
+    </div>
+
+    <div class="content px-4">
+        @Body
+    </div>
+</div>
+
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="10"
+                IconType="IconType.FontAwesome"
+                SuccessClass="success-toast-override"
+                SuccessIcon="fa fa-thumbs-up"
+                ErrorIcon="fa fa-bug" />
+
+@code{
+    protected override Task OnInitializedAsync()
+    {
+        _ = Start();
+        return base.OnInitializedAsync();
+    }
+
+    private async Task Start()
+    {
+        string token = await localStorage.GetItemAsync<string>(Utils.TOKEN);
+
+        if (string.IsNullOrEmpty(token) || await new AuthenticationService(token).IsAuthenticated())
+        {
+            navigationManager.NavigateTo($"/signIn");
+        }
+    }
+
+    public async Task SignOutClicked()
+    {
+        await localStorage.SetItemAsync("escoutToken", string.Empty);
+        toastService.ShowToast(ToastLevel.Info,@<text>You are no longer authenticated</text>);
+        Task.Delay(3000).Wait();
+        navigationManager.NavigateTo($"/SignIn");
+    }
+}

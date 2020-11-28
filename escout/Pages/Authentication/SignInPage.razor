@@ -1,0 +1,63 @@
+﻿@page "/signIn"
+
+@if (isLoading)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <body class="text-center">
+        <div class="form-signin">
+            <img class="mb-4" src="/images/escout-logo_icon-BLUE.svg" alt="" width="150" height="150">
+            <h1 class="h3 mb-3 font-weight-normal">Sign In</h1>
+            <input type="text" class="form-control" placeholder="Username" @bind-value="user.Username" required autofocus>
+            <input type="password" class="form-control" placeholder="Password" @bind-value="user.Password" required>
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="remember-me"> Remember me
+                </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" @onclick="SignInClicked">Sign in</button>
+            <button class="btn btn-lg btn-secondary btn-block" @onclick="SignUpClicked">Sign up</button>
+            <br />
+            <label class="btn-link" @onclick="ForgotPasswordClicked">Forgot Password?</label><br />
+            <label class="btn-link" @onclick="AboutClicked">About</label>
+        </div>
+    </body>
+}
+
+@code{
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+    private bool isLoading = false;
+    private User user = new User();
+
+    private void SignUpClicked() => Modal.Show<SignUpPage>("Sign Up");
+
+    private void ForgotPasswordClicked() => Modal.Show<ForgotPasswordPage>("Forgot Password");
+
+    private void AboutClicked() => Modal.Show<AboutPage>("About:");
+
+    private async Task SignInClicked()
+    {
+        if(!string.IsNullOrEmpty(user.Username) || !string.IsNullOrEmpty(user.Password))
+        {
+            isLoading = true;
+            var auth = await new escout.Services.AuthenticationService().SignInExecuted(user);
+
+            if (!string.IsNullOrEmpty(auth.Token))
+            {
+                await localStorage.SetItemAsync(Utils.TOKEN, auth.Token);
+                await localStorage.SetItemAsync(Utils.USER_ID, auth.Id);
+                toastService.ShowToast(ToastLevel.Success,@<text>Welcome to eScout</text>);
+                Task.Delay(3000).Wait();
+                navigationManager.NavigateTo($"/");
+            }
+            else 
+                toastService.ShowToast(ToastLevel.Error, @<text>Authentication Error!</text>);
+                
+            isLoading = false;
+        }
+        else
+            toastService.ShowToast(ToastLevel.Error, @<text>Fill username and password!</text>);
+    }
+}

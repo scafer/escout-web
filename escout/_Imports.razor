@@ -1,0 +1,26 @@
+﻿@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+
+@using escout
+@using escout.Shared
+@using escout.Models
+@using escout.Helpers
+@using escout.Services
+@using escout.Pages.Authentication
+
+@using Blazored
+@using Blazored.Toast
+@using Blazored.Toast.Services
+@using Blazored.Toast.Configuration
+@using Blazored.Modal
+@using Blazored.Modal.Services
+
+@inject IModalService Modal
+@inject IToastService toastService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
