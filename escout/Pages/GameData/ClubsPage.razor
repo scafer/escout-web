@@ -1,0 +1,88 @@
+﻿@page "/clubs"
+
+<h3>Clubs</h3>
+
+<EditForm Model="@searchQuery" OnValidSubmit="@SearchClicked">
+    <div class="form-group row">
+        <InputSelect @bind-Value="searchQuery.FieldName" class="form-control col-lg-2  m-1">
+            <option value="">Select...</option>
+            <option value="name">Name</option>
+            <option value="fullname">Fullname</option>
+            <option value="favorites">Favorites</option>
+        </InputSelect>
+        <InputText @bind-Value="searchQuery.Value" placeholder="Search..." class="form-control col-lg  m-1" />
+        <button class="btn btn-primary col-lg-1  m-1" value="Save">Search</button>
+        <button class="btn btn-primary col-lg-1  m-1" @onclick="NewClubClicked">New Club</button>
+    </div>
+</EditForm>
+<br />
+
+@if (isLoading)
+{
+<div class="spinner"></div> }
+else
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Fullname</th>
+            <th>Country</th>
+            <th>Founded</th>
+            <th>Colors</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var club in clubs)
+        {
+<tr>
+    <td>@club.Id</td>
+    <td>@club.Name</td>
+    <td>@club.Fullname</td>
+    <td>@club.Country</td>
+    <td>@club.Founded</td>
+    <td>@club.Colors</td>
+    <td><button @onclick="@(() => ClubDetails(club))" class="btn btn-secondary">+</button></td>
+</tr>
+}
+    </tbody>
+</table>}
+
+@code { private bool isLoading = false;
+    private List<Club> clubs;
+
+    private ClubService clubService;
+    private SearchQuery searchQuery = new SearchQuery();
+
+    protected override Task OnInitializedAsync()
+    {
+        _ = Start();
+        return base.OnInitializedAsync();
+    }
+
+    private async Task Start()
+    {
+        isLoading = true;
+        clubService = new ClubService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+        clubs = await clubService.SearchExecuted(null, null);
+        clubs = clubs.OrderBy(c => c.Id).ToList();
+        isLoading = false;
+        base.StateHasChanged();
+    }
+
+    private void NewClubClicked() => Modal.Show<NewClubPage>("New Club");
+
+    private async Task SearchClicked()
+    {
+        isLoading = true;
+        clubs = await clubService.SearchExecuted(searchQuery.FieldName, searchQuery.Value);
+        clubs = clubs.OrderBy(c => c.Id).ToList();
+        isLoading = false;
+    }
+
+    private void ClubDetails(Club club)
+    {
+        navigationManager.NavigateTo($"/clubs/{club.Id}");
+    } }

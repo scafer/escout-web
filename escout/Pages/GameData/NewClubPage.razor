@@ -1,0 +1,131 @@
+﻿@if (isLoading)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="center">
+        <EditForm Model="@club" OnValidSubmit="@NewClubClicked">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Name:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="club.Name" placeholder="Name" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Fullname:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="club.Fullname" placeholder="Fullname" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Country:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="club.Country" placeholder="Country" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Founded:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="club.Founded" placeholder="Founded" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Colors:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="club.Colors" placeholder="Colors" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Members:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="club.Members" placeholder="Members" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Stadium:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="club.Stadium" placeholder="Stadium" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Address:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="club.Address" placeholder="Address" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Home Page:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="club.Homepage" placeholder="Home Page" class="form-control" />
+                </div>
+            </div>
+            <br />
+            <div>
+                <button class="btn btn-primary" value="Save">Save</button>
+                <span>&nbsp;</span>
+                <button @onclick="Cancel" class="btn btn-secondary" value="Clear">Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    private bool isLoading = false;
+    public Club club;
+    private ClubService clubService;
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    void Cancel() => BlazoredModal.Cancel();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Console.WriteLine("NewClub - OnInitialized");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Console.WriteLine("NewClub - OnInitializedAsync");
+        club = new Club();
+        clubService = new ClubService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+    }
+
+    private async Task NewClubClicked()
+    {
+        isLoading = true;
+        var result = await clubService.CreateClub(club);
+        if (result != null)
+        {
+            toastService.ShowToast(ToastLevel.Success,@<text>Club saved.</text>);
+            await BlazoredModal.Close(ModalResult.Ok(true));
+
+        }
+        else 
+            toastService.ShowToast(ToastLevel.Error,@<text>Couldn't create new club.</text>);
+        
+        isLoading = false;
+    }
+}

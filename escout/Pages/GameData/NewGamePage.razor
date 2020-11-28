@@ -1,0 +1,144 @@
+﻿@if (isLoading)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="center">
+        <EditForm Model="@game" OnValidSubmit="@NewGameClicked">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Time Start:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="game.TimeStart" placeholder="yyyy/mm/dd HH:mm:ss" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Time End:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="game.TimeEnd" placeholder="yyyy/mm/dd HH:mm:ss" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Location:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="game.Location" placeholder="Location" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Type:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="game.Type" placeholder="Type" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Competition Id:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <select @bind="game.CompetitionId" class="form-control">
+                        @if (competitions != null)
+                        {
+                            @foreach (var c in competitions)
+                            {
+                                <option value="@c.Id">@c.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Home Club:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <select @bind="game.HomeId" class="form-control">
+                        @if (clubs != null)
+                        {
+                            @foreach (var c in clubs)
+                            {
+                                <option value="@c.Id">@c.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Visitor Club:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <select @bind="game.VisitorId" class="form-control">
+                        @if(clubs != null)
+                        {
+                            @foreach (var c in clubs)
+                            {
+                                <option value="@c.Id">@c.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <br />
+            <div>
+                <button class="btn btn-primary" value="Save">Save</button>
+                <span>&nbsp;</span>
+                <button @onclick="Cancel" class="btn btn-secondary" value="Clear">Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    private bool isLoading = false;
+    public Game game;
+    private GameService gameService;
+    public List<Club> clubs = new List<Club>();
+    public List<Competition> competitions = new List<Competition>();
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    void Cancel() => BlazoredModal.Cancel();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Console.WriteLine("NewGame - OnInitialized");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Console.WriteLine("NewGame - OnInitializedAsync");
+        game = new Game();
+        gameService = new GameService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+        clubs.Add(new Club { Name = "Select..."});
+        clubs.AddRange(await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetClubs());
+        competitions.Add(new Competition { Name = "Select..."});
+        competitions.AddRange(await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetCompetitions());
+    }
+
+    private async Task NewGameClicked()
+    {
+        isLoading = true;
+        game.UserId = await localStorage.GetItemAsync<int>(Utils.USER_ID);
+        var result = await gameService.CreateGame(game);
+        if (result != null)
+        {
+            toastService.ShowToast(ToastLevel.Success,@<text>Game saved.</text>);
+            await BlazoredModal.Close(ModalResult.Ok(true));
+        }
+        else 
+            toastService.ShowToast(ToastLevel.Error,@<text>Couldn't create new game.</text>);
+        isLoading = false;
+    }
+}

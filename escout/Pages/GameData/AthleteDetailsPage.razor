@@ -1,0 +1,276 @@
+﻿@page "/athletes/{id}"
+
+@if (isLoading)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <h3></h3>
+            </div>
+            <div class="col-lg-2">
+                @if (!isEditing)
+                {
+                    <button class="btn btn-info" @onclick="ToogleFavorite">Favorite</button>
+                    <button class="btn btn-dark" @onclick="ToggleIsEditing">Edit</button>
+                    <button class="btn btn-danger" @onclick="DeleteClicked">Delete</button>
+                }
+                else
+                {
+                    <button class="btn btn-dark" @onclick="ToggleIsEditing">Cancel</button>
+                    <button class="btn btn-success" @onclick="SaveClicked">Save</button>
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 justify-content-center">
+                <img class="bg-transparent img-thumbnail" src="@(image.ImageUrl)" alt="@(image.Img)" style="height:100%;" />
+            </div>
+            <div class="col-9">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="font-weight-bold">@athlete.Name</h3>
+                        <h6 class="text-info">@athlete.Fullname</h6>
+                        <h5>@clubName</h5>
+                        <div class="col-9"><hr /></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h4 class="font-weight-bold">Personal Details</h4>
+                        <div class="row">
+                            <div class="col-6">
+                                <h6>Height:</h6>
+                                <h6>Weight:</h6>
+                                <h6>Position:</h6>
+                                <h6>Birth Date:</h6>
+                                <h6>Birth Place:</h6>
+                                @if (isEditing)
+                                {
+                                    <h6>Club Id:</h6>
+                                    <h6>Position Key:</h6>
+                                }
+                            </div>
+                            <div class="col-6">
+                                @if (!isEditing)
+                                {
+                                    <h6 class="text-info">@athlete.Height</h6>
+                                    <h6 class="text-info">@athlete.Weight</h6>
+                                    <h6 class="text-info">@athlete.Position</h6>
+                                    <h6 class="text-info">@athlete.BirthDate</h6>
+                                    <h6 class="text-info">@athlete.BirthPlace</h6>
+                                }
+                                else
+                                {
+                                    <input @bind-value="athlete.Height" />
+                                    <input @bind-value="athlete.Weight" />
+                                    <input @bind-value="athlete.Position" />
+                                    <input @bind-value="athlete.BirthDate" />
+                                    <input @bind-value="athlete.BirthPlace" />
+                                    <select @bind="athlete.ClubId" >
+                                        @if (clubs != null)
+                                        {
+                                            @foreach (var c in clubs)
+                                            {
+                                                <option value="@c.Id">@c.Name</option>
+                                            }
+                                        }
+                                    </select><br />
+                                    <select @bind="athlete.PositionKey" >
+                                        @if(Utils.PositionKeys != null)
+                                        {
+                                            @foreach (var c in Utils.PositionKeys)
+                                            {
+                                                <option value="@c.Key">@c.Value</option>
+                                            }
+                                        }
+                                    </select>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <h4 class="font-weight-bold">Career Details</h4>
+                        <div class="row">
+                            <div class="col-6">
+                                <h6>Total games:*</h6>
+                                <h6>Faults:*</h6>
+                                <h6>Shots:*</h6>
+                                <h6>Agent:</h6>
+                                <h6>Status:</h6>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-info">0</h6>
+                                <h6 class="text-info">0</h6>
+                                <h6 class="text-info">0</h6>
+                                @if (!isEditing)
+                                {
+                                    <h6 class="text-info">@athlete.Agent</h6>
+                                    <h6 class="text-info">@athlete.Status</h6>
+                                }
+                                else
+                                {
+                                    <input @bind-value="athlete.Agent"/>
+                                    <input @bind-value="athlete.Status"/>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row"><div class="col-12"><hr /></div></div> 
+    <!-- Profile separator from games history -->
+        <div class="row">
+            <div class="col-12">
+                <h3 class="font-weight-bold">Statistics</h3>
+            </div>
+            <div class="col-12">
+                <div class="center">
+                    <button class="btn btn-warning m-5" @onclick="LoadStatistics">Load</button>
+                </div>
+
+                @if (stats.Count != 0)
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Event Name</th>
+                                <th>Count</th>
+                                <th>Average</th>
+                                <th>Standard Deviation</th>
+                                <th>Median</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var stat in stats)
+                            {
+                                <tr>
+                                    <td><img src="@Utils.GetImageUrl(stat.eventKey)" alt="@stat.eventName"></td>
+                                    <td>@stat.eventName</td>
+                                    <td>@stat.count</td>
+                                    <td>@stat.average</td>
+                                    <td>@stat.standardDeviation</td>
+                                    <td>@stat.median</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code{
+    [Parameter]
+    public string Id { get; set; }
+    private bool isLoading = false;
+    private bool isEditing = false;
+
+    private string clubName;
+    private Image image = new Image();
+    private AthleteService athletesService;
+    private FavoritesService favoritesService;
+    private Athlete athlete = new Athlete();
+    private List<Club> clubs = new List<Club>();
+    private List<StatsTable> stats = new List<StatsTable>();
+
+
+    private void ToggleIsEditing() { isEditing = isEditing ? false : true; }
+
+    protected override Task OnInitializedAsync()
+    {
+        _ = Start(Id);
+        return base.OnInitializedAsync();
+    }
+
+    private async Task Start(string athleteId)
+    {
+        isLoading = true;
+        favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+        athletesService = new AthleteService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+        athlete = await athletesService.GetAthleteById(int.Parse(athleteId));
+        clubs = await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetClubs();
+
+        if (athlete.ImageId != null)
+            image = await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetImage(athlete.ImageId);
+        else
+            image = new Image { ImageUrl = "/images/athlete_fill-BLUE.svg" };
+
+        if (athlete.ClubId != null)
+        {
+            var club = await RestUtils.GetClubName(await localStorage.GetItemAsync<string>(Utils.TOKEN), athlete.ClubId);
+            clubName = club.Name;
+        }
+        else { clubName = "Athlete without club affiliation"; }
+
+        isLoading = false;
+        base.StateHasChanged();
+    }
+
+    private async Task LoadStatistics()
+    {
+        Statistics statistics = await athletesService.GetAthleteStatistics(athlete.Id, null);
+        List<Event> events = await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetEvents(null);
+        stats = new List<StatsTable>();
+
+        if (statistics.totalStats != null)
+        {
+            foreach (Event e in events)
+            {
+                foreach (TotalStat stat in statistics.totalStats)
+                {
+                    if (stat.eventId == e.Id)
+                        stats.Add(new StatsTable(stat, e));
+                }
+            }
+        }
+    }
+
+    private async Task ToogleFavorite()
+    {
+        Favorite favorite = new Favorite();
+        favorite.AthleteId = int.Parse(Id);
+        var result = await favoritesService.ToogleFavorite(favorite);
+        
+        if (result.ErrorCode != 0)
+            toastService.ShowToast(ToastLevel.Error,@<text>Error</text>);
+        else
+        {
+            toastService.ShowToast(ToastLevel.Success, @<text>Updated</text>);
+            isEditing = false;
+        }
+    }
+
+    private async Task SaveClicked()
+    {
+        var result = await athletesService.UpdateAthlete(athlete);
+
+        if (result.ErrorCode != 0)
+            toastService.ShowToast(ToastLevel.Error,@<text>Error</text>);
+        else
+        {
+            toastService.ShowToast(ToastLevel.Success, @<text>Athlete updated</text>);
+            isEditing = false;
+        }
+    }
+    
+    private async Task DeleteClicked()
+    {
+        var result = await athletesService.DeleteAthlete(athlete.Id);
+        
+        if (result.ErrorCode != 0)
+            toastService.ShowToast(ToastLevel.Error, @<text>Error</text>);
+        else
+        {
+            toastService.ShowToast(ToastLevel.Success, @<text>Athlete deleted</text>);
+            Task.Delay(3000).Wait();
+            navigationManager.NavigateTo($"/athletes");
+        }
+    }
+}
