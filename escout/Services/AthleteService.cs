@@ -27,11 +27,10 @@ namespace escout.Services
         public async Task<Athlete> GetAthleteById(int id)
         {
             var athlete = new Athlete();
-            var request = RestConnector.ATHLETE + "?id=" + id;
+            var response = await new RestConnector(token).GetObjectAsync(RestConnector.ATHLETE + "?id=" + id);
 
-            var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                athlete = JsonConvert.DeserializeObject<Athlete>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                athlete = JsonConvert.DeserializeObject<Athlete>(await response.Content.ReadAsStringAsync());
 
             return athlete;
         }
@@ -39,36 +38,32 @@ namespace escout.Services
         public async Task<List<Athlete>> CreateAthlete(Athlete athlete)
         {
             var result = new List<Athlete>();
-            var request = RestConnector.ATHLETE;
-            var athletes = new List<Athlete>();
-            athletes.Add(athlete);
-            var response = await new RestConnector(token).PostObjectAsync(request, athletes);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<List<Athlete>>(response);
+            var response = await new RestConnector(token).PostObjectAsync(RestConnector.ATHLETE, new List<Athlete> { athlete });
+
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<List<Athlete>>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
 
-        public async Task<SvcResult> UpdateAthlete(Athlete athlete)
+        public async Task<HttpResponse> UpdateAthlete(Athlete athlete)
         {
-            SvcResult result = new SvcResult();
-            var request = RestConnector.ATHLETE;
+            var result = new HttpResponse();
+            var response = await new RestConnector(token).PutObjectAsync(RestConnector.ATHLETE, athlete);
 
-            var response = await new RestConnector(token).PutObjectAsync(request, athlete);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<SvcResult>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<HttpResponse>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
 
-        public async Task<SvcResult> DeleteAthlete(int athleteId)
+        public async Task<HttpResponse> DeleteAthlete(int athleteId)
         {
-            var result = new SvcResult();
-            var request = RestConnector.ATHLETE + "?id=" + athleteId;
-            var response = await new RestConnector(token).DeleteObjectAsync(request);
+            var result = new HttpResponse();
+            var response = await new RestConnector(token).DeleteObjectAsync(RestConnector.ATHLETE + "?id=" + athleteId);
 
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<SvcResult>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<HttpResponse>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
@@ -84,37 +79,39 @@ namespace escout.Services
                 request += "?athleteId=" + athleteId + "&gameId=" + gameId;
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                statistics = JsonConvert.DeserializeObject<Statistics>(response);
+
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                statistics = JsonConvert.DeserializeObject<Statistics>(await response.Content.ReadAsStringAsync());
 
             return statistics;
         }
 
         private async Task<List<Athlete>> GetAthletes(SearchQuery query)
         {
-            var _athletes = new List<Athlete>();
+            var athletes = new List<Athlete>();
             var request = RestConnector.ATHLETES;
 
             if (query != null)
                 request += "?query=" + JsonConvert.SerializeObject(query);
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                _athletes = JsonConvert.DeserializeObject<List<Athlete>>(response);
 
-            return _athletes;
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                athletes = JsonConvert.DeserializeObject<List<Athlete>>(await response.Content.ReadAsStringAsync());
+
+            return athletes;
         }
 
         private async Task<List<Athlete>> GetFavoriteAthletes()
         {
             var athletes = new List<Athlete>();
             var request = RestConnector.FAVORITES + "?query=athleteId";
+            var response = await new RestConnector(token).GetObjectAsync(request);
 
-            var favoriteResponse = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(favoriteResponse))
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
             {
-                var _favorites = JsonConvert.DeserializeObject<List<Favorite>>(favoriteResponse);
-                foreach (var f in _favorites)
+                var favorites = JsonConvert.DeserializeObject<List<Favorite>>(await response.Content.ReadAsStringAsync());
+                foreach (var f in favorites)
                     athletes.Add(await GetAthleteById(int.Parse(f.AthleteId.ToString())));
             }
 

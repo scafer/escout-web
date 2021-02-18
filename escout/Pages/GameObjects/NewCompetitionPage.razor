@@ -1,0 +1,74 @@
+﻿@if (isLoading)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="center">
+        <EditForm Model="@competition" OnValidSubmit="@NewCompetitionClicked">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Name:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="competition.Name" placeholder="Name" class="form-control" />
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Edition:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="competition.Edition" placeholder="Edition" class="form-control" />
+                </div>
+            </div>
+            <br />
+            <div>
+                <button class="btn btn-primary" value="Save">Save</button>
+                <span>&nbsp;</span>
+                <button @onclick="Cancel" class="btn btn-secondary" value="Clear">Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; }
+
+    private bool isLoading = false;
+    public Competition competition;
+    private BoardsService boardsService;
+
+    private void Cancel() => BlazoredModal.CancelAsync();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Start();
+    }
+
+    private async void Start()
+    {
+        competition = new Competition();
+        boardsService = new BoardsService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+    }
+
+    private async Task NewCompetitionClicked()
+    {
+        isLoading = true;
+        competition.SportId = 1;
+        var result = await boardsService.CreateCompetition(competition);
+        if (result != null)
+        {
+            toastService.ShowToast(ToastLevel.Success,@<text>Competition saved.</text>);
+            await BlazoredModal.CloseAsync(ModalResult.Ok(true));
+        }
+        else 
+            toastService.ShowToast(ToastLevel.Error,@<text>Couldn't create new competition.</text>);
+        isLoading = false;
+
+    }
+}

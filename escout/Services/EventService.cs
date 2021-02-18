@@ -31,8 +31,8 @@ namespace escout.Services
                 request += "?query=" + JsonConvert.SerializeObject(query);
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                _events = JsonConvert.DeserializeObject<List<Event>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                _events = JsonConvert.DeserializeObject<List<Event>>(await response.Content.ReadAsStringAsync());
 
             return _events;
         }
@@ -44,32 +44,32 @@ namespace escout.Services
             var events = new List<Event>();
             events.Add(e);
             var response = await new RestConnector(token).PostObjectAsync(request, events);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<List<Event>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<List<Event>>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
 
-        public async Task<SvcResult> UpdateEvent(Event e)
+        public async Task<HttpResponse> UpdateEvent(Event e)
         {
-            SvcResult result = new SvcResult();
+            HttpResponse result = new HttpResponse();
             var request = RestConnector.EVENT;
 
             var response = await new RestConnector(token).PutObjectAsync(request, e);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<SvcResult>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<HttpResponse>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
 
-        public async Task<SvcResult> DeleteEvent(int eventId)
+        public async Task<HttpResponse> DeleteEvent(int eventId)
         {
-            var result = new SvcResult();
+            var result = new HttpResponse();
             var request = RestConnector.EVENT + "?eventId=" + eventId;
             var response = await new RestConnector(token).DeleteObjectAsync(request);
 
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<SvcResult>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<HttpResponse>(await response.Content.ReadAsStringAsync());
 
             return result;
         }

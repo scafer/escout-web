@@ -33,8 +33,8 @@ namespace escout.Services
                 request += "?query=" + JsonConvert.SerializeObject(query);
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                _clubs = JsonConvert.DeserializeObject<List<Club>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                _clubs = JsonConvert.DeserializeObject<List<Club>>(await response.Content.ReadAsStringAsync());
 
             return _clubs;
         }
@@ -45,8 +45,8 @@ namespace escout.Services
             var request = RestConnector.CLUB + "?id=" + id;
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                club = JsonConvert.DeserializeObject<Club>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                club = JsonConvert.DeserializeObject<Club>(await response.Content.ReadAsStringAsync());
 
             return club;
         }
@@ -62,8 +62,8 @@ namespace escout.Services
                 request += "?clubId=" + clubId + "&gameId=" + gameId;
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                statistics = JsonConvert.DeserializeObject<Statistics>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                statistics = JsonConvert.DeserializeObject<Statistics>(await response.Content.ReadAsStringAsync());
 
             return statistics;
         }
@@ -75,32 +75,32 @@ namespace escout.Services
             var clubs = new List<Club>();
             clubs.Add(club);
             var response = await new RestConnector(token).PostObjectAsync(request, clubs);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<List<Club>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<List<Club>>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
 
-        public async Task<SvcResult> UpdateClub(Club club)
+        public async Task<HttpResponse> UpdateClub(Club club)
         {
-            SvcResult result = new SvcResult();
+            HttpResponse result = new HttpResponse();
             var request = RestConnector.CLUB;
 
             var response = await new RestConnector(token).PutObjectAsync(request, club);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<SvcResult>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<HttpResponse>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
 
-        public async Task<SvcResult> DeleteClub(int clubId)
+        public async Task<HttpResponse> DeleteClub(int clubId)
         {
-            var result = new SvcResult();
+            var result = new HttpResponse();
             var request = RestConnector.CLUB + "?id=" + clubId;
             var response = await new RestConnector(token).DeleteObjectAsync(request);
 
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<SvcResult>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<HttpResponse>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
@@ -111,9 +111,9 @@ namespace escout.Services
             var request = RestConnector.FAVORITES + "?query=clubId";
 
             var favoriteResponse = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(favoriteResponse))
+            if (!string.IsNullOrEmpty(await favoriteResponse.Content.ReadAsStringAsync()))
             {
-                var _favorites = JsonConvert.DeserializeObject<List<Favorite>>(favoriteResponse);
+                var _favorites = JsonConvert.DeserializeObject<List<Favorite>>(await favoriteResponse.Content.ReadAsStringAsync());
                 foreach (var f in _favorites)
                     clubs.Add(await GetClubById(int.Parse(f.ClubId.ToString())));
             }
