@@ -45,7 +45,7 @@
 </table>}
 
 @code {
-    private bool isLoading = false;
+    private bool isLoading = true;
     private BoardsService boardsService;
     private List<Competition> competitions;
     private SearchQuery searchQuery = new SearchQuery();
@@ -58,7 +58,6 @@
 
     private async void Start()
     {
-        isLoading = true;
         boardsService = new BoardsService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
         competitions = await boardsService.SearchExecuted(null, null);
         competitions = competitions.OrderBy(c => c.Id).ToList();

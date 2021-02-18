@@ -33,7 +33,7 @@ else
 }
 
 @code {
-    private bool isLoading = false;
+    private bool isLoading = true;
     private List<Event> events;
     private EventService eventService;
 
@@ -46,7 +46,6 @@ else
 
     private async void Start()
     {
-        isLoading = true;
         eventService = new EventService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
         events = await eventService.SearchExecuted(null, null);
         events = events.OrderBy(c => c.Id).ToList();

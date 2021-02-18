@@ -161,7 +161,7 @@ else
 @code {
     [Parameter]
     public string Id { get; set; }
-    private bool isLoading = false;
+    private bool isLoading = true;
     private bool isEditing = false;
 
     private GameService gameService;
@@ -188,7 +188,6 @@ else
 
     private async void Start(string gameId)
     {
-        isLoading = true;
         gameService = new GameService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
         favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
         gameData = await gameService.GetGameDataById(int.Parse(gameId));
