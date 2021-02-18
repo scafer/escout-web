@@ -15,11 +15,9 @@
 </div>
 
 <BlazoredToasts Position="ToastPosition.BottomRight"
-                Timeout="10"
+                Timeout="5"
                 IconType="IconType.FontAwesome"
-                SuccessClass="success-toast-override"
-                SuccessIcon="fa fa-thumbs-up"
-                ErrorIcon="fa fa-bug" />
+                ShowProgressBar="true" />
 
 @code{
     protected override Task OnInitializedAsync()
@@ -32,16 +30,21 @@
     {
         string token = await localStorage.GetItemAsync<string>(Utils.TOKEN);
 
-        if (string.IsNullOrEmpty(token) || await new AuthenticationService(token).IsAuthenticated())
-        {
+        if (string.IsNullOrEmpty(token))
             navigationManager.NavigateTo($"/signIn");
+
+        else if (!string.IsNullOrEmpty(token))
+        {
+            var response = await new RestConnector(token).GetObjectAsync(RestConnector.AUTHENTICATED);
+            if (!200.Equals((int)response.StatusCode))
+                navigationManager.NavigateTo($"/signIn");
         }
     }
 
     public async Task SignOutClicked()
     {
-        await localStorage.SetItemAsync("escoutToken", string.Empty);
-        toastService.ShowToast(ToastLevel.Info,@<text>You are no longer authenticated</text>);
+        await localStorage.SetItemAsync(Utils.TOKEN, string.Empty);
+        toastService.ShowToast(ToastLevel.Info, "You are no longer authenticated");
         Task.Delay(3000).Wait();
         navigationManager.NavigateTo($"/SignIn");
     }

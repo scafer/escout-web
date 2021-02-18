@@ -27,37 +27,43 @@ else
 }
 
 @code{
-    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; }
+
     private bool isLoading = false;
     private User user = new User();
 
-    private void SignUpClicked() => Modal.Show<SignUpPage>("Sign Up");
-
-    private void ForgotPasswordClicked() => Modal.Show<ForgotPasswordPage>("Forgot Password");
-
     private void AboutClicked() => Modal.Show<AboutPage>("About:");
+    private void SignUpClicked() => Modal.Show<SignUpPage>("Sign Up");
+    private void ForgotPasswordClicked() => Modal.Show<ForgotPasswordPage>("Forgot Password");
 
     private async Task SignInClicked()
     {
-        if(!string.IsNullOrEmpty(user.Username) || !string.IsNullOrEmpty(user.Password))
-        {
-            isLoading = true;
-            var auth = await new escout.Services.AuthenticationService().SignInExecuted(user);
+        isLoading = true;
 
-            if (!string.IsNullOrEmpty(auth.Token))
+        if (!string.IsNullOrEmpty(user.Username) || !string.IsNullOrEmpty(user.Password))
+        {
+            var response = await new RestConnector().PostObjectAsync(RestConnector.SIGN_IN,
+                new User(user.Username, RestUtils.GenerateSha256String(user.Password), string.Empty, 0));
+
+            if (200.Equals((int)response.StatusCode))
             {
+                var auth = JsonConvert.DeserializeObject<AuthData>(await response.Content.ReadAsStringAsync());
+
                 await localStorage.SetItemAsync(Utils.TOKEN, auth.Token);
                 await localStorage.SetItemAsync(Utils.USER_ID, auth.Id);
-                toastService.ShowToast(ToastLevel.Success,@<text>Welcome to eScout</text>);
+
+                toastService.ShowSuccess("Welcome to eScout");
                 Task.Delay(3000).Wait();
                 navigationManager.NavigateTo($"/");
             }
-            else 
-                toastService.ShowToast(ToastLevel.Error, @<text>Authentication Error!</text>);
-                
-            isLoading = false;
+
+            else
+                toastService.ShowError(await response.Content.ReadAsStringAsync());
         }
         else
-            toastService.ShowToast(ToastLevel.Error, @<text>Fill username and password!</text>);
+            toastService.ShowError("Fill username and password!");
+
+        isLoading = false;
     }
 }
