@@ -53,9 +53,8 @@ else
 }
 
 @code {
-    private bool isLoading = false;
+    private bool isLoading = true;
     private List<GameWithClubs> gameWithClubs;
-
     private GameService gamesService;
     private SearchQuery searchQuery = new SearchQuery();
 
@@ -67,7 +66,6 @@ else
 
     private async void Start()
     {
-        isLoading = true;
         gamesService = new GameService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
         var games = await gamesService.SearchExecuted(null, null);
 
