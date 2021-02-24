@@ -1,7 +1,7 @@
 ﻿using escout.Helpers;
 using escout.Models;
-using Newtonsoft.Json;
 using System.Threading.Tasks;
+using escout.Models.Rest.GameObjects;
 
 namespace escout.Services
 {
@@ -13,15 +13,10 @@ namespace escout.Services
 
         public FavoritesService(string token) => this.token = token;
 
-        public async Task<SvcResult> ToogleFavorite(Favorite favorite)
+        public async Task<HttpResponse> ToogleFavorite(Favorite favorite)
         {
-            var result = new SvcResult();
-            var request = RestConnector.FAVORITE;
-            var response = await new RestConnector(token).PostObjectAsync(request, favorite);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<SvcResult>(response);
-
-            return result;
+            var response = await new RestConnector(token).PostObjectAsync(RestConnector.FAVORITE, favorite);
+            return new HttpResponse(response.StatusCode, await response.Content.ReadAsStringAsync());
         }
     }
 }
