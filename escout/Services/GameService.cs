@@ -3,6 +3,9 @@ using escout.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using escout.Models.Rest.GameObjects;
+using escout.Models.Rest.GameStatistics;
+using escout.Models.Rest.GenericObjects;
 
 namespace escout.Services
 {
@@ -33,8 +36,8 @@ namespace escout.Services
                 request += "?query=" + JsonConvert.SerializeObject(query);
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                _games = JsonConvert.DeserializeObject<List<Game>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                _games = JsonConvert.DeserializeObject<List<Game>>(await response.Content.ReadAsStringAsync());
 
             return _games;
         }
@@ -45,8 +48,8 @@ namespace escout.Services
             var request = RestConnector.GAME + "?id=" + id;
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                game = JsonConvert.DeserializeObject<Game>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                game = JsonConvert.DeserializeObject<Game>(await response.Content.ReadAsStringAsync());
 
             return game;
         }
@@ -57,8 +60,8 @@ namespace escout.Services
             var request = RestConnector.GAME_DATA + "?gameId=" + id;
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                gameData = JsonConvert.DeserializeObject<GameData>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                gameData = JsonConvert.DeserializeObject<GameData>(await response.Content.ReadAsStringAsync());
 
             return gameData;
         }
@@ -69,8 +72,8 @@ namespace escout.Services
             var request = RestConnector.GAME_STATISTICS + "?gameId=" + id;
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<List<ClubStat>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<List<ClubStat>>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
@@ -82,32 +85,32 @@ namespace escout.Services
             var games = new List<Game>();
             games.Add(game);
             var response = await new RestConnector(token).PostObjectAsync(request, games);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<List<Game>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<List<Game>>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
 
-        public async Task<SvcResult> UpdateGame(Game game)
+        public async Task<HttpResponse> UpdateGame(Game game)
         {
-            SvcResult result = new SvcResult();
+            HttpResponse result = new HttpResponse();
             var request = RestConnector.GAME;
 
             var response = await new RestConnector(token).PutObjectAsync(request, game);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<SvcResult>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<HttpResponse>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
 
-        public async Task<SvcResult> DeleteGame(int gameId)
+        public async Task<HttpResponse> DeleteGame(int gameId)
         {
-            var result = new SvcResult();
+            var result = new HttpResponse();
             var request = RestConnector.GAME + "?gameId=" + gameId;
             var response = await new RestConnector(token).DeleteObjectAsync(request);
 
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<SvcResult>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<HttpResponse>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
@@ -118,9 +121,9 @@ namespace escout.Services
             var request = RestConnector.FAVORITES + "?query=gameId";
 
             var favoriteResponse = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(favoriteResponse))
+            if (!string.IsNullOrEmpty(await favoriteResponse.Content.ReadAsStringAsync()))
             {
-                var _favorites = JsonConvert.DeserializeObject<List<Favorite>>(favoriteResponse);
+                var _favorites = JsonConvert.DeserializeObject<List<Favorite>>(await favoriteResponse.Content.ReadAsStringAsync());
                 foreach (var f in _favorites)
                     games.Add(await GetGameById(int.Parse(f.GameId.ToString())));
             }

@@ -3,6 +3,8 @@ using escout.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using escout.Models.Rest.GameObjects;
+using escout.Models.Rest.GenericObjects;
 
 namespace escout.Services
 {
@@ -33,8 +35,8 @@ namespace escout.Services
                 request += "?query=" + JsonConvert.SerializeObject(query);
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                competition = JsonConvert.DeserializeObject<List<Competition>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                competition = JsonConvert.DeserializeObject<List<Competition>>(await response.Content.ReadAsStringAsync());
 
             return competition;
         }
@@ -45,8 +47,8 @@ namespace escout.Services
             var request = RestConnector.COMPETITION + "?id=" + id;
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                competition = JsonConvert.DeserializeObject<Competition>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                competition = JsonConvert.DeserializeObject<Competition>(await response.Content.ReadAsStringAsync());
 
             return competition;
         }
@@ -57,8 +59,8 @@ namespace escout.Services
             var request = RestConnector.COMPETITION_BOARD + "?id=" + id;
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                boards = JsonConvert.DeserializeObject<List<CompetitionBoard>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                boards = JsonConvert.DeserializeObject<List<CompetitionBoard>>(await response.Content.ReadAsStringAsync());
 
             return boards;
         }
@@ -70,32 +72,32 @@ namespace escout.Services
             var competitions = new List<Competition>();
             competitions.Add(competitionId);
             var response = await new RestConnector(token).PostObjectAsync(request, competitions);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<List<Competition>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<List<Competition>>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
 
-        public async Task<SvcResult> UpdateCompetition(Competition competitionId)
+        public async Task<HttpResponse> UpdateCompetition(Competition competitionId)
         {
-            SvcResult result = new SvcResult();
+            HttpResponse result = new HttpResponse();
             var request = RestConnector.COMPETITION;
 
             var response = await new RestConnector(token).PutObjectAsync(request, competitionId);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<SvcResult>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<HttpResponse>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
 
-        public async Task<SvcResult> DeleteCompetition(int competitionId)
+        public async Task<HttpResponse> DeleteCompetition(int competitionId)
         {
-            var result = new SvcResult();
+            var result = new HttpResponse();
             var request = RestConnector.COMPETITION + "?id=" + competitionId;
             var response = await new RestConnector(token).DeleteObjectAsync(request);
 
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<SvcResult>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<HttpResponse>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
@@ -109,8 +111,8 @@ namespace escout.Services
             obj.Add(board);
 
             var response = await new RestConnector(token).PostObjectAsync(request, obj);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<List<CompetitionBoard>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<List<CompetitionBoard>>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
@@ -121,20 +123,20 @@ namespace escout.Services
             var request = RestConnector.COMPETITION_BOARD;
 
             var response = await new RestConnector(token).PutObjectAsync(request, board);
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<CompetitionBoard>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<CompetitionBoard>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
 
-        public async Task<SvcResult> DeleteCompetitionBoard(int competitionBoardId)
+        public async Task<HttpResponse> DeleteCompetitionBoard(int competitionBoardId)
         {
-            var result = new SvcResult();
+            var result = new HttpResponse();
             var request = RestConnector.COMPETITION_BOARD + "?id=" + competitionBoardId;
             var response = await new RestConnector(token).DeleteObjectAsync(request);
 
-            if (!string.IsNullOrEmpty(response))
-                result = JsonConvert.DeserializeObject<SvcResult>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                result = JsonConvert.DeserializeObject<HttpResponse>(await response.Content.ReadAsStringAsync());
 
             return result;
         }
@@ -145,9 +147,9 @@ namespace escout.Services
             var request = RestConnector.FAVORITES + "?query=competitionId";
 
             var favoriteResponse = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(favoriteResponse))
+            if (!string.IsNullOrEmpty(await favoriteResponse.Content.ReadAsStringAsync()))
             {
-                var _favorites = JsonConvert.DeserializeObject<List<Favorite>>(favoriteResponse);
+                var _favorites = JsonConvert.DeserializeObject<List<Favorite>>(await favoriteResponse.Content.ReadAsStringAsync());
                 foreach (var f in _favorites)
                     competitions.Add(await GetCompetitionById(int.Parse(f.CompetitionId.ToString())));
             }

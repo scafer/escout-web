@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using escout.Models.Rest.GameObjects;
+using escout.Models.Rest.GenericObjects;
 
 namespace escout.Helpers
 {
@@ -20,8 +22,8 @@ namespace escout.Helpers
         {
             var img = new Image();
             var response = await new RestConnector(token).GetObjectAsync(RestConnector.IMAGE + "?id=" + imageId);
-            if (!string.IsNullOrEmpty(response))
-                img = JsonConvert.DeserializeObject<Image>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                img = JsonConvert.DeserializeObject<Image>(await response.Content.ReadAsStringAsync());
 
             return img;
         }
@@ -35,8 +37,8 @@ namespace escout.Helpers
                 request += "?query=" + JsonConvert.SerializeObject(query);
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                events = JsonConvert.DeserializeObject<List<Event>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                events = JsonConvert.DeserializeObject<List<Event>>(await response.Content.ReadAsStringAsync());
 
             return events;
         }
@@ -47,8 +49,8 @@ namespace escout.Helpers
             var request = RestConnector.CLUBS;
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                clubs = JsonConvert.DeserializeObject<List<Club>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                clubs = JsonConvert.DeserializeObject<List<Club>>(await response.Content.ReadAsStringAsync());
 
             return clubs;
         }
@@ -59,8 +61,8 @@ namespace escout.Helpers
             var request = RestConnector.COMPETITIONS;
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(response))
-                competitions = JsonConvert.DeserializeObject<List<Competition>>(response);
+            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+                competitions = JsonConvert.DeserializeObject<List<Competition>>(await response.Content.ReadAsStringAsync());
 
             return competitions;
         }
