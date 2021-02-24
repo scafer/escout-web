@@ -1,8 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
-namespace escout.Models
+namespace escout.Models.Rest.GameObjects
 {
     public class Game
     {

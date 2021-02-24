@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using escout.Models.Rest.GameObjects;
+using escout.Models.Rest.GenericObjects;
 
 namespace escout.Helpers
 {

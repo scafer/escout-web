@@ -1,6 +1,7 @@
 ﻿using escout.Helpers;
 using escout.Models;
 using System.Threading.Tasks;
+using escout.Models.Rest.GameObjects;
 
 namespace escout.Services
 {

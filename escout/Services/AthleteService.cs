@@ -3,6 +3,9 @@ using escout.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using escout.Models.Rest.GameObjects;
+using escout.Models.Rest.GameStatistics;
+using escout.Models.Rest.GenericObjects;
 
 namespace escout.Services
 {

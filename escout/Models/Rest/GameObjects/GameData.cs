@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace escout.Models
+namespace escout.Models.Rest.GameObjects
 {
     public class GameData
     {

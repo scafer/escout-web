@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace escout.Helpers
 {
     public class RestConnector
-    {        
+    {
         //Authentication API Endpoints
         public const string V1_AUTHENTICATION = "/api/v1/authentication/";
         public const string SIGN_IN = V1_AUTHENTICATION + "sign-in";

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using escout.Models.Rest.GameObjects;
 using Newtonsoft.Json;
 
-namespace escout.Models
+namespace escout.Models.Rest.GameStatistics
 {
     public class Statistics
     {
