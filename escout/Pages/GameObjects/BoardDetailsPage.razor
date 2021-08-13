@@ -268,13 +268,13 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
-        }
-        else
-        {
             toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Competition"));
             Task.Delay(3000).Wait();
             navigationManager.NavigateTo($"/boards");
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
         }
     }
 
