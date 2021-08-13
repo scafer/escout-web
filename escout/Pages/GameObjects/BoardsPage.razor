@@ -1,6 +1,4 @@
 ﻿@page "/boards"
-@using escout.Models.Rest.GameObjects
-@using escout.Models.Rest.GenericObjects
 
 <h3>Boards</h3>
 
@@ -21,30 +19,31 @@
 
 @if (isLoading)
 {
-<div class="spinner"></div> }
-            else
-            {
-<table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Edition</th>
-            <th>Details</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var competition in competitions)
-        {
-<tr>
-    <td>@competition.Id</td>
-    <td>@competition.Name</td>
-    <td>@competition.Edition</td>
-    <td><button @onclick="@(() => BoardDetails(competition))" class="btn btn-secondary">+</button></td>
-</tr>
+    <div class="spinner"></div>
 }
-    </tbody>
-</table>}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Edition</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var competition in competitions)
+            {
+                <tr>
+                    <td>@competition.Id</td>
+                    <td>@competition.Name</td>
+                    <td>@competition.Edition</td>
+                    <td><button @onclick="@(() => BoardDetails(competition))" class="btn btn-secondary">+</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>}
 
 @code {
     private bool isLoading = true;
@@ -60,7 +59,7 @@
 
     private async void Start()
     {
-        boardsService = new BoardsService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+        boardsService = new BoardsService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
         competitions = await boardsService.SearchExecuted(null, null);
         competitions = competitions.OrderBy(c => c.Id).ToList();
         isLoading = false;

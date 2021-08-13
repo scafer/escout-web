@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace escout.Models.Rest.GameObjects
 {
@@ -18,5 +19,8 @@ namespace escout.Models.Rest.GameObjects
 
         [JsonProperty("updated")]
         public string Updated { get; set; }
+
+        [JsonProperty("displayOptions")]
+        public Dictionary<string, string> DisplayOptions { get; set; }
     }
 }

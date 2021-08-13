@@ -1,6 +1,4 @@
 @page "/athletes"
-@using escout.Models.Rest.GameObjects
-@using escout.Models.Rest.GenericObjects
 
 <h3>Athletes</h3>
 
@@ -52,8 +50,7 @@ else
     </table>
 }
 
-@code
-{
+@code {
     private bool isLoading = true;
     private List<Athlete> athletes;
     private AthleteService athletesService;
@@ -67,11 +64,21 @@ else
 
     private async void Start()
     {
-        athletesService = new AthleteService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+        athletesService = new AthleteService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
         athletes = await athletesService.SearchExecuted(null, null);
         athletes = athletes.OrderBy(c => c.Id).ToList();
         isLoading = false;
         base.StateHasChanged();
+    }
+
+    private void NewAthleteClicked()
+    {
+        Modal.Show<NewAthletePage>("New Athlete");
+    }
+
+    private void AthleteDetails(Athlete athlete)
+    {
+        navigationManager.NavigateTo($"/athletes/{athlete.Id}");
     }
 
     private async Task SearchClicked()
@@ -80,15 +87,5 @@ else
         athletes = await athletesService.SearchExecuted(searchQuery.FieldName, searchQuery.Value);
         athletes = athletes.OrderBy(c => c.Id).ToList();
         isLoading = false;
-    }
-    private void NewAthleteClicked()
-    {
-        Modal.Show<NewAthletePage>("New Athlete");
-    }
-
-
-    private void AthleteDetails(Athlete athlete)
-    {
-        navigationManager.NavigateTo($"/athletes/{athlete.Id}");
     }
 }

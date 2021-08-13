@@ -1,7 +1,4 @@
 ﻿@page "/clubs/{id}"
-@using escout.Models.Rest.GenericObjects
-@using escout.Models.Rest.GameObjects
-@using escout.Models.Rest.GameStatistics
 
 @if (isLoading)
 {
@@ -74,7 +71,7 @@ else
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <h4 class="font-weight-bold"></h4><br/>
+                        <h4 class="font-weight-bold"></h4><br />
                         <div class="row">
                             <div class="col-6">
                                 <h6>Total games:*</h6>
@@ -129,7 +126,7 @@ else
                             @foreach (var stat in stats)
                             {
                                 <tr>
-                                    <td><img src="@Utils.GetImageUrl(stat.EventKey)" alt="@stat.EventName"></td>
+                                    <td><img src="@GenericUtils.GetImageUrl(stat.EventKey)" alt="@stat.EventName"></td>
                                     <td>@stat.EventName</td>
                                     <td>@stat.Count</td>
                                     <td>@stat.Average</td>
@@ -157,7 +154,8 @@ else
     private Club club = new Club();
     List<StatsTable> stats = new List<StatsTable>();
 
-    private void ToggleIsEditing() { isEditing = isEditing ? false : true; }
+    private void ToggleIsEditing()
+    { isEditing = isEditing ? false : true; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -167,14 +165,11 @@ else
 
     private async void Start(string clubId)
     {
-        clubService = new ClubService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
-        favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
-        club = await clubService.GetClubById(int.Parse(clubId));
+        clubService = new ClubService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+        favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
 
-        if (club.ImageId != null)
-            image = await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetImage(club.ImageId);
-        else
-            image = new Image { ImageUrl = "/images/club_fill-BLUE.svg" };
+        club = await clubService.GetClubById(int.Parse(clubId));
+        image = club.DisplayOptions.ContainsKey("imageUrl") ? new Image { ImageUrl = club.DisplayOptions["imageUrl"] } : new Image { ImageUrl = "/images/club_fill-BLUE.svg" };
 
         isLoading = false;
         base.StateHasChanged();
@@ -182,8 +177,8 @@ else
 
     private async Task LoadStatistics()
     {
-        Statistics statistics = await clubService.GetClubStatistics(club.Id, null);
-        List<Event> events = await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetEvents(null);
+        var statistics = await clubService.GetClubStatistics(club.Id, null);
+        var events = await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetEvents(null);
         stats = new List<StatsTable>();
 
         if (statistics.TotalStats != null)
@@ -193,7 +188,9 @@ else
                 foreach (TotalStat stat in statistics.TotalStats)
                 {
                     if (stat.EventId == e.Id)
+                    {
                         stats.Add(new StatsTable(stat, e));
+                    }
                 }
             }
         }
@@ -201,43 +198,47 @@ else
 
     private async Task SaveClicked()
     {
-        var result = await clubService.UpdateClub(club);
+        var response = await clubService.UpdateClub(club);
 
-        if (!200.Equals(result.StatusCode))
-            toastService.ShowToast(ToastLevel.Error,@<text>Error</text>);
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, "Club updated");
+            isEditing = false;
+        }
         else
         {
-            toastService.ShowToast(ToastLevel.Success, @<text>Club updated</text>);
-            isEditing = false;
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
         }
     }
 
     private async Task DeleteClicked()
     {
-        var result = await clubService.DeleteClub(club.Id);
+        var response = await clubService.DeleteClub(club.Id);
 
-        if (!200.Equals(result.StatusCode))
-            toastService.ShowToast(ToastLevel.Error,@<text>Error</text>);
-        else
+        if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success, @<text>Club deleted</text>);
+            toastService.ShowToast(ToastLevel.Success, "Club deleted");
             Task.Delay(3000).Wait();
             navigationManager.NavigateTo($"/clubs");
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
         }
     }
 
     private async Task ToogleFavorite()
     {
-        Favorite favorite = new Favorite();
-        favorite.ClubId = int.Parse(Id);
-        var result = await favoritesService.ToogleFavorite(favorite);
+        var response = await favoritesService.ToogleFavorite(new Favorite(int.Parse(Id)));
 
-        if (!200.Equals(result.StatusCode))
-            toastService.ShowToast(ToastLevel.Error,@<text>Error</text>);
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, ConstValues.MSG_GENERIC_UPDATED);
+            isEditing = false;
+        }
         else
         {
-            toastService.ShowToast(ToastLevel.Success, @<text>Updated</text>);
-            isEditing = false;
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
         }
     }
 }

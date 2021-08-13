@@ -1,8 +1,6 @@
 ﻿@page "/events"
-@using escout.Models.Rest.GameObjects
 
 <h3>Events</h3>
-
 
 @if (isLoading)
 {
@@ -23,7 +21,7 @@ else
             @foreach (var evt in events)
             {
                 <tr>
-                    <td><img src="@Utils.GetImageUrl(evt.Key)" alt="@evt.Name"></td>
+                    <td><img src="@GenericUtils.GetImageUrl(evt.Key)" alt="@evt.Name" width="75" height="75"></td>
                     <td>@evt.Key</td>
                     <td>@evt.Name</td>
                     <td>@evt.Description</td>
@@ -47,9 +45,10 @@ else
 
     private async void Start()
     {
-        eventService = new EventService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+        eventService = new EventService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
         events = await eventService.SearchExecuted(null, null);
         events = events.OrderBy(c => c.Id).ToList();
+
         isLoading = false;
         base.StateHasChanged();
     }

@@ -1,5 +1,4 @@
-﻿@using escout.Models.Rest.GameObjects
-@if (isLoading)
+﻿@if (isLoading)
 {
     <div class="spinner"></div>
 }
@@ -99,7 +98,10 @@ else
     public Club club;
     private ClubService clubService;
 
-    private void Cancel() => BlazoredModal.CancelAsync();
+    private void Cancel()
+    {
+        BlazoredModal.CancelAsync();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -110,20 +112,23 @@ else
     private async void Start()
     {
         club = new Club();
-        clubService = new ClubService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+        clubService = new ClubService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
     }
 
     private async Task NewClubClicked()
     {
         isLoading = true;
-        var result = await clubService.CreateClub(club);
-        if (result != null)
+        var response = await clubService.CreateClub(club);
+
+        if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success,@<text>Club saved.</text>);
+            toastService.ShowToast(ToastLevel.Success, "Club saved.");
             await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         }
         else
-            toastService.ShowToast(ToastLevel.Error,@<text>Couldn't create new club.</text>);
+        {
+            toastService.ShowToast(ToastLevel.Error, "Couldn't create new club.");
+        }
 
         isLoading = false;
     }

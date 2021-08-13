@@ -1,7 +1,4 @@
 ﻿@page "/athletes/{id}"
-@using escout.Models.Rest.GenericObjects
-@using escout.Models.Rest.GameObjects
-@using escout.Models.Rest.GameStatistics
 
 @if (isLoading)
 {
@@ -17,13 +14,13 @@ else
             <div class="col-lg-2">
                 @if (!isEditing)
                 {
-                    <button class="btn btn-info" @onclick="ToogleFavorite">Favorite</button>
-                    <button class="btn btn-dark" @onclick="ToggleIsEditing">Edit</button>
+                    <button class="btn btn-info" @onclick="FavoriteToogle">Favorite</button>
+                    <button class="btn btn-dark" @onclick="IsEditingToggle">Edit</button>
                     <button class="btn btn-danger" @onclick="DeleteClicked">Delete</button>
                 }
                 else
                 {
-                    <button class="btn btn-dark" @onclick="ToggleIsEditing">Cancel</button>
+                    <button class="btn btn-dark" @onclick="IsEditingToggle">Cancel</button>
                     <button class="btn btn-success" @onclick="SaveClicked">Save</button>
                 }
             </div>
@@ -73,7 +70,7 @@ else
                                     <input @bind-value="athlete.Position" />
                                     <input @bind-value="athlete.BirthDate" />
                                     <input @bind-value="athlete.BirthPlace" />
-                                    <select @bind="athlete.ClubId" >
+                                    <select @bind="athlete.ClubId">
                                         @if (clubs != null)
                                         {
                                             @foreach (var c in clubs)
@@ -82,10 +79,10 @@ else
                                             }
                                         }
                                     </select><br />
-                                    <select @bind="athlete.PositionKey" >
-                                        @if(Utils.PositionKeys != null)
+                                    <select @bind="athlete.PositionKey">
+                                        @if (ConstValues.PositionKeys != null)
                                         {
-                                            @foreach (var c in Utils.PositionKeys)
+                                            @foreach (var c in ConstValues.PositionKeys)
                                             {
                                                 <option value="@c.Key">@c.Value</option>
                                             }
@@ -116,8 +113,8 @@ else
                                 }
                                 else
                                 {
-                                    <input @bind-value="athlete.Agent"/>
-                                    <input @bind-value="athlete.Status"/>
+                                    <input @bind-value="athlete.Agent" />
+                                    <input @bind-value="athlete.Status" />
                                 }
                             </div>
                         </div>
@@ -125,15 +122,15 @@ else
                 </div>
             </div>
         </div>
-        <div class="row"><div class="col-12"><hr /></div></div> 
-    <!-- Profile separator from games history -->
+        <div class="row"><div class="col-12"><hr /></div></div>
+        <!-- Profile separator from games history -->
         <div class="row">
             <div class="col-12">
                 <h3 class="font-weight-bold">Statistics</h3>
             </div>
             <div class="col-12">
                 <div class="center">
-                    <button class="btn btn-warning m-5" @onclick="LoadStatistics">Load</button>
+                    <button class="btn btn-warning m-5" @onclick="LoadStatisticsClick">Load</button>
                 </div>
 
                 @if (stats.Count != 0)
@@ -153,7 +150,7 @@ else
                             @foreach (var stat in stats)
                             {
                                 <tr>
-                                    <td><img src="@Utils.GetImageUrl(stat.EventKey)" alt="@stat.EventName"></td>
+                                    <td><img src="@GenericUtils.GetImageUrl(stat.EventKey)" alt="@stat.EventName"></td>
                                     <td>@stat.EventName</td>
                                     <td>@stat.Count</td>
                                     <td>@stat.Average</td>
@@ -169,7 +166,7 @@ else
     </div>
 }
 
-@code{
+@code {
     [Parameter]
     public string Id { get; set; }
     private bool isLoading = true;
@@ -183,9 +180,6 @@ else
     private List<Club> clubs = new List<Club>();
     private List<StatsTable> stats = new List<StatsTable>();
 
-
-    private void ToggleIsEditing() { isEditing = isEditing ? false : true; }
-
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -194,31 +188,41 @@ else
 
     private async void Start(string athleteId)
     {
-        favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
-        athletesService = new AthleteService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+        favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+        athletesService = new AthleteService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+
         athlete = await athletesService.GetAthleteById(int.Parse(athleteId));
-        clubs = await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetClubs();
-
-        if (athlete.ImageId != null)
-            image = await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetImage(athlete.ImageId);
-        else
-            image = new Image { ImageUrl = "/images/athlete_fill-BLUE.svg" };
-
-        if (athlete.ClubId != null)
-        {
-            var club = await RestUtils.GetClubName(await localStorage.GetItemAsync<string>(Utils.TOKEN), athlete.ClubId);
-            clubName = club.Name;
-        }
-        else { clubName = "Athlete without club affiliation"; }
+        image = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(athlete.DisplayOptions, "imageUrl", "/images/athlete_fill-BLUE.svg") };
+        clubName = GenericUtils.GetDisplayOptionFromDictionary(athlete.DisplayOptions, "clubName", "Athlete without club affiliation");
 
         isLoading = false;
         base.StateHasChanged();
     }
 
-    private async Task LoadStatistics()
+    private void IsEditingToggle()
     {
-        Statistics statistics = await athletesService.GetAthleteStatistics(athlete.Id, null);
-        List<Event> events = await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetEvents(null);
+        isEditing = isEditing ? false : true;
+    }
+
+    private async Task FavoriteToogle()
+    {
+        var response = await favoritesService.ToogleFavorite(new Favorite(int.Parse(Id)));
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, ConstValues.MSG_GENERIC_UPDATED);
+            isEditing = false;
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+    }
+
+    private async Task LoadStatisticsClick()
+    {
+        var statistics = await athletesService.GetAthleteStatistics(athlete.Id, null);
+        var events = await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetEvents(null);
         stats = new List<StatsTable>();
 
         if (statistics.TotalStats != null)
@@ -228,51 +232,42 @@ else
                 foreach (TotalStat stat in statistics.TotalStats)
                 {
                     if (stat.EventId == e.Id)
+                    {
                         stats.Add(new StatsTable(stat, e));
+                    }
                 }
             }
         }
     }
 
-    private async Task ToogleFavorite()
-    {
-        Favorite favorite = new Favorite();
-        favorite.AthleteId = int.Parse(Id);
-        var result = await favoritesService.ToogleFavorite(favorite);
-
-        if (!200.Equals(result.StatusCode))
-            toastService.ShowToast(ToastLevel.Error,@<text>Error</text>);
-        else
-        {
-            toastService.ShowToast(ToastLevel.Success, @<text>Updated</text>);
-            isEditing = false;
-        }
-    }
-
     private async Task SaveClicked()
     {
-        var result = await athletesService.UpdateAthlete(athlete);
+        var response = await athletesService.UpdateAthlete(athlete);
 
-        if (!200.Equals(result.StatusCode))
-            toastService.ShowToast(ToastLevel.Error, "Error");
-        else
+        if (response.IsSuccessStatusCode)
         {
             toastService.ShowToast(ToastLevel.Success, "Athlete updated");
             isEditing = false;
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
         }
     }
 
     private async Task DeleteClicked()
     {
-        var result = await athletesService.DeleteAthlete(athlete.Id);
+        var response = await athletesService.DeleteAthlete(athlete.Id);
 
-        if (!200.Equals(result.StatusCode))
-            toastService.ShowToast(ToastLevel.Error, @<text>Error</text>);
-        else
+        if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success, @<text>Athlete deleted</text>);
+            toastService.ShowToast(ToastLevel.Success, "Athlete deleted");
             Task.Delay(3000).Wait();
             navigationManager.NavigateTo($"/athletes");
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
         }
     }
 }

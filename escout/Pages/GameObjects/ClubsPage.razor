@@ -1,6 +1,4 @@
 ﻿@page "/clubs"
-@using escout.Models.Rest.GameObjects
-@using escout.Models.Rest.GenericObjects
 
 <h3>Clubs</h3>
 
@@ -66,7 +64,7 @@ else
 
     private async void Start()
     {
-        clubService = new ClubService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+        clubService = new ClubService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
         clubs = await clubService.SearchExecuted(null, null);
         clubs = clubs.OrderBy(c => c.Id).ToList();
 

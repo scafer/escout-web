@@ -1,6 +1,4 @@
 @page "/games"
-@using escout.Models.Rest.GameObjects
-@using escout.Models.Rest.GenericObjects
 
 <h3>Games</h3>
 
@@ -37,17 +35,17 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var game in gameWithClubs)
+            @foreach (var game in games)
             {
                 <tr>
-                    <td>@game.Game.Id</td>
-                    <td>@game.HomeClub.Name</td>
-                    <td>@game.VisitorClub.Name</td>
-                    <td>@game.Game.TimeStart</td>
-                    <td>@game.Game.TimeEnd</td>
-                    <td>@game.Game.HomeScore</td>
-                    <td>@game.Game.VisitorScore</td>
-                    <td><button @onclick="@(() => GameDetails(game.Game))" class="btn btn-secondary">+</button></td>
+                    <td>@game.Id</td>
+                    <td>@game.DisplayOptions.GetValueOrDefault("homeName")</td>
+                    <td>@game.DisplayOptions.GetValueOrDefault("visitorName")</td>
+                    <td>@game.TimeStart</td>
+                    <td>@game.TimeEnd</td>
+                    <td>@game.HomeScore</td>
+                    <td>@game.VisitorScore</td>
+                    <td><button @onclick="@(() => GameDetails(game))" class="btn btn-secondary">+</button></td>
                 </tr>
             }
         </tbody>
@@ -56,7 +54,7 @@ else
 
 @code {
     private bool isLoading = true;
-    private List<GameWithClubs> gameWithClubs;
+    private List<Game> games = new List<Game>();
     private GameService gamesService;
     private SearchQuery searchQuery = new SearchQuery();
 
@@ -68,21 +66,9 @@ else
 
     private async void Start()
     {
-        gamesService = new GameService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
-        var games = await gamesService.SearchExecuted(null, null);
-
-        gameWithClubs = new List<GameWithClubs>();
-
-        foreach (var g in games)
-        {
-            var x = new GameWithClubs();
-            x.Game = g;
-            x.HomeClub = await RestUtils.GetClubName(await localStorage.GetItemAsync<string>(Utils.TOKEN), g.HomeId);
-            x.VisitorClub = await RestUtils.GetClubName(await localStorage.GetItemAsync<string>(Utils.TOKEN), g.VisitorId);
-            gameWithClubs.Add(x);
-        }
-
-        gameWithClubs = gameWithClubs.OrderBy(c => c.Game.Id).ToList();
+        gamesService = new GameService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+        games = await gamesService.SearchExecuted(null, null);
+        games.OrderBy(c => c.Id).ToList();
 
         isLoading = false;
         base.StateHasChanged();
@@ -92,25 +78,14 @@ else
     {
         isLoading = true;
         var games = await gamesService.SearchExecuted(searchQuery.FieldName, searchQuery.Value);
-
-        gameWithClubs = new List<GameWithClubs>();
-
-        foreach (var g in games)
-        {
-            var x = new GameWithClubs
-            {
-                Game = g,
-                HomeClub = await RestUtils.GetClubName(await localStorage.GetItemAsync<string>(Utils.TOKEN), g.HomeId),
-                VisitorClub = await RestUtils.GetClubName(await localStorage.GetItemAsync<string>(Utils.TOKEN), g.VisitorId)
-            };
-            gameWithClubs.Add(x);
-        }
-
-        gameWithClubs = gameWithClubs.OrderBy(c => c.Game.Id).ToList();
+        games.OrderBy(c => c.Id).ToList();
         isLoading = false;
     }
 
-    private void NewGameClicked() => Modal.Show<NewGamePage>("New Game");
+    private void NewGameClicked()
+    {
+        Modal.Show<NewGamePage>("New Game");
+    }
 
     private void GameDetails(Game game)
     {

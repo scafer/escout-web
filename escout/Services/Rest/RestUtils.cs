@@ -1,68 +1,85 @@
-﻿using escout.Models;
-using escout.Services;
+﻿using escout.Models.Rest.GameObjects;
+using escout.Models.Rest.GenericObjects;
+using escout.Services.Generic;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using escout.Models.Rest.GameObjects;
-using escout.Models.Rest.GenericObjects;
 
-namespace escout.Helpers
+namespace escout.Services.Rest
 {
     public class RestUtils
     {
         private readonly string token;
 
-        public RestUtils() => token = string.Empty;
+        public RestUtils()
+        {
+            token = string.Empty;
+        }
 
-        public RestUtils(string token) => this.token = token;
+        public RestUtils(string token)
+        {
+            this.token = token;
+        }
 
         public async Task<Image> GetImage(int? imageId)
         {
             var img = new Image();
-            var response = await new RestConnector(token).GetObjectAsync(RestConnector.IMAGE + "?id=" + imageId);
-            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+            var response = await new RestConnector(token).GetObjectAsync(RestConstValues.IMAGE + "?id=" + imageId);
+
+            if (response.IsSuccessStatusCode)
+            {
                 img = JsonConvert.DeserializeObject<Image>(await response.Content.ReadAsStringAsync());
+            }
 
             return img;
         }
 
         public async Task<List<Event>> GetEvents(SearchQuery query)
         {
-            List<Event> events = new List<Event>();
-            var request = RestConnector.EVENTS;
+            var events = new List<Event>();
+            var request = RestConstValues.EVENTS;
 
             if (query != null)
+            {
                 request += "?query=" + JsonConvert.SerializeObject(query);
+            }
 
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+
+            if (response.IsSuccessStatusCode)
+            {
                 events = JsonConvert.DeserializeObject<List<Event>>(await response.Content.ReadAsStringAsync());
+            }
 
             return events;
         }
 
         public async Task<List<Club>> GetClubs()
         {
-            List<Club> clubs = new List<Club>();
-            var request = RestConnector.CLUBS;
-
+            var clubs = new List<Club>();
+            var request = RestConstValues.CLUBS;
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+
+            if (response.IsSuccessStatusCode)
+            {
                 clubs = JsonConvert.DeserializeObject<List<Club>>(await response.Content.ReadAsStringAsync());
+            }
 
             return clubs;
         }
 
         public async Task<List<Competition>> GetCompetitions()
         {
-            List<Competition> competitions = new List<Competition>();
-            var request = RestConnector.COMPETITIONS;
-
+            var competitions = new List<Competition>();
+            var request = RestConstValues.COMPETITIONS;
             var response = await new RestConnector(token).GetObjectAsync(request);
-            if (!string.IsNullOrEmpty(await response.Content.ReadAsStringAsync()))
+
+            if (response.IsSuccessStatusCode)
+            {
                 competitions = JsonConvert.DeserializeObject<List<Competition>>(await response.Content.ReadAsStringAsync());
+            }
 
             return competitions;
         }
@@ -74,14 +91,15 @@ namespace escout.Helpers
 
         public static string GenerateSha256String(string inputString)
         {
-            var sb = new StringBuilder();
             using var hash = SHA256.Create();
 
-            var enc = Encoding.UTF8;
-            var result = hash.ComputeHash(enc.GetBytes(inputString));
+            var sb = new StringBuilder();
+            var result = hash.ComputeHash(Encoding.UTF8.GetBytes(inputString));
 
             foreach (var b in result)
+            {
                 sb.Append(b.ToString("x2"));
+            }
 
             return sb.ToString();
         }
