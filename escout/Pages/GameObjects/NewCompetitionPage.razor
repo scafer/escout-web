@@ -1,5 +1,4 @@
-﻿@using escout.Models.Rest.GameObjects
-@if (isLoading)
+﻿@if (isLoading)
 {
     <div class="spinner"></div>
 }
@@ -54,21 +53,24 @@ else
     private async void Start()
     {
         competition = new Competition();
-        boardsService = new BoardsService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+        boardsService = new BoardsService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
     }
 
     private async Task NewCompetitionClicked()
     {
         isLoading = true;
         competition.SportId = 1;
-        var result = await boardsService.CreateCompetition(competition);
-        if (result != null)
+        var response = await boardsService.CreateCompetition(competition);
+
+        if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success,@<text>Competition saved.</text>);
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_SAVED, "Competition"));
             await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         }
-        else 
-            toastService.ShowToast(ToastLevel.Error,@<text>Couldn't create new competition.</text>);
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, string.Format(ConstValues.MSG_ERROR_CREATING_OBJECT, "competition"));
+        }
         isLoading = false;
 
     }

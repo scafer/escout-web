@@ -27,5 +27,12 @@ namespace escout.Models.Rest.GameObjects
 
         [JsonProperty("updated")]
         public string Updated { get; set; }
+
+        public Favorite() { }
+
+        public Favorite(int id)
+        {
+            Id = id;
+        }
     }
 }
