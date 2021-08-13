@@ -28,22 +28,27 @@
 
     private async Task Start()
     {
-        string token = await localStorage.GetItemAsync<string>(Utils.TOKEN);
+        string token = await localStorage.GetItemAsync<string>(ConstValues.TOKEN);
 
         if (string.IsNullOrEmpty(token))
+        {
             navigationManager.NavigateTo($"/signIn");
+        }
 
         else if (!string.IsNullOrEmpty(token))
         {
-            var response = await new RestConnector(token).GetObjectAsync(RestConnector.AUTHENTICATED);
-            if (!200.Equals((int)response.StatusCode))
+            var response = await new RestConnector(token).GetObjectAsync(RestConstValues.AUTHENTICATED);
+
+            if (!response.IsSuccessStatusCode)
+            {
                 navigationManager.NavigateTo($"/signIn");
+            }
         }
     }
 
     public async Task SignOutClicked()
     {
-        await localStorage.SetItemAsync(Utils.TOKEN, string.Empty);
+        await localStorage.SetItemAsync(ConstValues.TOKEN, string.Empty);
         toastService.ShowToast(ToastLevel.Info, "You are no longer authenticated");
         Task.Delay(3000).Wait();
         navigationManager.NavigateTo($"/SignIn");

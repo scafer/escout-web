@@ -1,5 +1,4 @@
-﻿@using escout.Models.Rest.GameObjects
-@if (isLoading)
+﻿@if (isLoading)
 {
     <div class="spinner"></div>
 }
@@ -55,9 +54,9 @@ else
                 </div>
                 <div class="col-7 mb-1">
                     <select @bind="athlete.PositionKey" class="form-control">
-                        @if (Utils.PositionKeys != null)
+                        @if (ConstValues.PositionKeys != null)
                         {
-                            @foreach (var c in Utils.PositionKeys)
+                            @foreach (var c in ConstValues.PositionKeys)
                             {
                                 <option value="@c.Key">@c.Value</option>
                             }
@@ -92,13 +91,16 @@ else
 }
 @code {
     private bool isLoading = false;
-    public Athlete athlete;
+    public Athlete athlete = new Athlete();
     public List<Club> clubs = new List<Club>();
     private AthleteService athletesService;
 
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
-    private void Cancel() => BlazoredModal.CancelAsync();
+    private void Cancel()
+    {
+        BlazoredModal.CancelAsync();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -108,23 +110,27 @@ else
 
     private async void Start()
     {
-        athlete = new Athlete();
-        athletesService = new AthleteService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
-        clubs.Add(new Club { Name = "Select..." });
-        clubs.AddRange(await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetClubs());
+        athletesService = new AthleteService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+        clubs.Add(new Club { Name = ConstValues.OPTION_GENERIC_SELECT });
+        clubs.AddRange(await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetClubs());
+        base.StateHasChanged();
     }
 
     private async Task NewAthleteClicked()
     {
         isLoading = true;
-        var result = await athletesService.CreateAthlete(athlete);
-        if (result != null)
+        var response = await athletesService.CreateAthlete(athlete);
+
+        if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success,@<text>Athlete saved.</text>);
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_SAVED, "Athlete"));
             await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         }
         else
-            toastService.ShowToast(ToastLevel.Error,@<text>Couldn't create new athlete.</text>);
+        {
+            toastService.ShowToast(ToastLevel.Error, string.Format(ConstValues.MSG_ERROR_CREATING_OBJECT, "athlete"));
+        }
+
         isLoading = false;
     }
 }

@@ -1,12 +1,10 @@
-﻿@using escout.Models.Rest.GenericObjects
-@if (isLoading)
+﻿@if (isLoading)
 {
     <div class="spinner"></div>
 }
 else
 {
     <p>Insert your sign-up details.</p>
-
     <div class="center">
         <EditForm Model="@user" OnValidSubmit="@SignUpClicked">
             <div class="row justify-content-start">
@@ -69,22 +67,27 @@ else
     public bool isNotifications = true;
     public User user = new User();
 
-    void Cancel() => BlazoredModal.CancelAsync();
+    void Cancel()
+    {
+        BlazoredModal.CancelAsync();
+    }
 
     private async Task SignUpClicked()
     {
         isLoading = true;
 
-        var result = await new RestConnector().PostObjectAsync(RestConnector.SIGN_UP,
+        var response = await new RestConnector().PostObjectAsync(RestConstValues.SIGN_UP,
                 new User(user.Username, RestUtils.GenerateSha256String(user.Password), user.Email, isNotifications ? 1 : 0));
 
-        if (200.Equals((int)result.StatusCode))
+        if (response.IsSuccessStatusCode)
         {
-            toastService.ShowSuccess("Your account was successfully created");
+            toastService.ShowSuccess(ConstValues.MSG_WELCOME);
             await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         }
         else
-            toastService.ShowError(await result.Content.ReadAsStringAsync());
+        {
+            toastService.ShowError(await response.Content.ReadAsStringAsync());
+        }
 
         isLoading = false;
     }

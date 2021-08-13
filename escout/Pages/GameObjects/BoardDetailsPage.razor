@@ -1,6 +1,4 @@
 ﻿@page "/boards/{id}"
-@using escout.Models.Rest.GenericObjects
-@using escout.Models.Rest.GameObjects
 
 @if (isLoading)
 {
@@ -16,13 +14,13 @@ else
             <div class="col-2">
                 @if (!isEditing)
                 {
-                    <button class="btn btn-info" @onclick="ToogleFavorite">Favorite</button>
-                    <button class="btn btn-dark" @onclick="ToggleIsEditing">Edit</button>
+                    <button class="btn btn-info" @onclick="FavoriteToogle">Favorite</button>
+                    <button class="btn btn-dark" @onclick="IsEditingToggle">Edit</button>
                     <button class="btn btn-danger" @onclick="DeleteClicked">Delete</button>
                 }
                 else
                 {
-                    <button class="btn btn-dark" @onclick="ToggleIsEditing">Cancel</button>
+                    <button class="btn btn-dark" @onclick="IsEditingToggle">Cancel</button>
                     <button class="btn btn-success" @onclick="SaveClicked">Save</button>
                 }
             </div>
@@ -102,35 +100,35 @@ else
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var board in competitionBoardWithClubs)
+                        @foreach (var board in competitionBoard)
                         {
                             <tr>
                                 @if (!isEditing)
                                 {
-                                    <td>@board.Competition.Position</td>
-                                    <td>@board.Club.Name</td>
-                                    <td>@board.Competition.Points</td>
-                                    <td>@board.Competition.Played</td>
-                                    <td>@board.Competition.Won</td>
-                                    <td>@board.Competition.Drawn</td>
-                                    <td>@board.Competition.Lost</td>
-                                    <td>@board.Competition.GoalsFor</td>
-                                    <td>@board.Competition.GoalsAgainst</td>
-                                    <td>@board.Competition.GoalsDifference</td>
+                                    <td>@board.Position</td>
+                                    <td>@board.DisplayOptions.GetValueOrDefault("clubName")</td>
+                                    <td>@board.Points</td>
+                                    <td>@board.Played</td>
+                                    <td>@board.Won</td>
+                                    <td>@board.Drawn</td>
+                                    <td>@board.Lost</td>
+                                    <td>@board.GoalsFor</td>
+                                    <td>@board.GoalsAgainst</td>
+                                    <td>@board.GoalsDifference</td>
                                 }
                                 else
                                 {
-                                    <td><input @bind-value="board.Competition.Position" class="col-lg"/></td>
-                                    <td>@board.Club.Name</td>
-                                    <td><input @bind-value="board.Competition.Points" class="col-lg"/></td>
-                                    <td><input @bind-value="board.Competition.Played" class="col-lg"/></td>
-                                    <td><input @bind-value="board.Competition.Won" class="col-lg"/></td>
-                                    <td><input @bind-value="board.Competition.Drawn" class="col-lg"/></td>
-                                    <td><input @bind-value="board.Competition.Lost" class="col-lg"/></td>
-                                    <td><input @bind-value="board.Competition.GoalsFor" class="col-lg"/></td>
-                                    <td><input @bind-value="board.Competition.GoalsAgainst" class="col-lg"/></td>
-                                    <td><input @bind-value="board.Competition.GoalsDifference" class="col-lg"/></td>
-                                    <td><button @onclick="@(() => RemoveCompetitionBoard(board))" class="btn btn-danger col-lg">-</button></td>
+                                    <td><input @bind-value="board.Position" class="col-lg" /></td>
+                                    <td>@board.DisplayOptions.GetValueOrDefault("clubName")</td>
+                                    <td><input @bind-value="board.Points" class="col-lg" /></td>
+                                    <td><input @bind-value="board.Played" class="col-lg" /></td>
+                                    <td><input @bind-value="board.Won" class="col-lg" /></td>
+                                    <td><input @bind-value="board.Drawn" class="col-lg" /></td>
+                                    <td><input @bind-value="board.Lost" class="col-lg" /></td>
+                                    <td><input @bind-value="board.GoalsFor" class="col-lg" /></td>
+                                    <td><input @bind-value="board.GoalsAgainst" class="col-lg" /></td>
+                                    <td><input @bind-value="board.GoalsDifference" class="col-lg" /></td>
+                                    <td><button @onclick="@(() => RemoveCompetitionBoardEntryClicked(board))" class="btn btn-danger col-lg">-</button></td>
                                 }
                             </tr>
                         }
@@ -159,26 +157,27 @@ else
                         </thead>
                         <tbody>
                             <tr>
-                                <td><input @bind-value="board1.Position" /></td>
+                                <td><input @bind-value="boardEntry.Position" /></td>
                                 <td>
-                                    <select @bind="board1.ClubId" class="form-control">
+                                    <select @bind="boardEntry.ClubId" class="form-control">
                                         @if (clubs != null)
                                         {
                                             @foreach (var c in clubs)
                                             {
                                                 <option value="@c.Id">@c.Name</option>
-}}
+                                            }
+                                        }
                                     </select>
                                 </td>
-                                <td><input @bind-value="board1.Points" class="col-lg"/></td>
-                                <td><input @bind-value="board1.Played" class="col-lg"/></td>
-                                <td><input @bind-value="board1.Won" class="col-lg"/></td>
-                                <td><input @bind-value="board1.Drawn" class="col-lg"/></td>
-                                <td><input @bind-value="board1.Lost" class="col-lg"/></td>
-                                <td><input @bind-value="board1.GoalsFor" class="col-lg"/></td>
-                                <td><input @bind-value="board1.GoalsAgainst" class="col-lg"/></td>
-                                <td><input @bind-value="board1.GoalsDifference" class="col-lg"/></td>
-                                <td><button @onclick="@(() => CreateCompetitionBoard())" class="btn btn-success col-lg">+</button></td>
+                                <td><input @bind-value="boardEntry.Points" class="col-lg" /></td>
+                                <td><input @bind-value="boardEntry.Played" class="col-lg" /></td>
+                                <td><input @bind-value="boardEntry.Won" class="col-lg" /></td>
+                                <td><input @bind-value="boardEntry.Drawn" class="col-lg" /></td>
+                                <td><input @bind-value="boardEntry.Lost" class="col-lg" /></td>
+                                <td><input @bind-value="boardEntry.GoalsFor" class="col-lg" /></td>
+                                <td><input @bind-value="boardEntry.GoalsAgainst" class="col-lg" /></td>
+                                <td><input @bind-value="boardEntry.GoalsDifference" class="col-lg" /></td>
+                                <td><button @onclick="@(() => CreateCompetitionBoardEntryClicked())" class="btn btn-success col-lg">+</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -199,45 +198,115 @@ else
     private Image image = new Image();
     public List<Club> clubs = new List<Club>();
     private Competition competition = new Competition();
-    private CompetitionBoard board1 = new CompetitionBoard();
-    private List<CompetitionBoardWithClub> competitionBoardWithClubs = new List<CompetitionBoardWithClub>();
-
-    private void ToggleIsEditing()
-    {
-        isEditing = isEditing ? false : true;
-    }
+    private CompetitionBoard boardEntry = new CompetitionBoard();
+    private List<CompetitionBoard> competitionBoard = new List<CompetitionBoard>();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Start(Id);
+        _ = Start(Id);
+        _ = LoadClubsList();
     }
 
-    private async void Start(string competitionId)
+    private async Task Start(string competitionId)
     {
-        favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
-        boardsService = new BoardsService(await localStorage.GetItemAsync<string>(Utils.TOKEN));
+        favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+        boardsService = new BoardsService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+
         competition = await boardsService.GetCompetitionById(int.Parse(competitionId));
-        var competitionBoard = await boardsService.GetCompetitionBoardById(int.Parse(competitionId));
+        competitionBoard = await boardsService.GetCompetitionBoardById(int.Parse(competitionId));
 
-        clubs.Add(new Club { Name = "Select..." });
-        clubs.AddRange(await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetClubs());
-
-        foreach (var board in competitionBoard)
-        {
-            var club = await RestUtils.GetClubName(await localStorage.GetItemAsync<string>(Utils.TOKEN), board.ClubId);
-            competitionBoardWithClubs.Add(new CompetitionBoardWithClub(board, club));
-        }
-
-        competitionBoardWithClubs = competitionBoardWithClubs.OrderBy(c => c.Competition.Id).ToList();
-
-        if (competition.ImageId != null)
-            image = await new RestUtils(await localStorage.GetItemAsync<string>(Utils.TOKEN)).GetImage(competition.ImageId);
-        else
-            image = new Image { ImageUrl = "/images/competition_fill-BLUE.svg" };
+        competitionBoard = competitionBoard.OrderBy(c => c.Id).ToList();
+        image = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(competition.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "competition_fill-BLUE")) };
 
         isLoading = false;
         base.StateHasChanged();
+    }
+
+    private async Task SaveClicked()
+    {
+        var response = await boardsService.UpdateCompetition(competition);
+
+        foreach (var c in competitionBoard)
+        {
+            _ = boardsService.UpdateCompetitionBoard(c);
+        }
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_UPDATED, "Competition"));
+            isEditing = false;
+        }
+    }
+
+    private async Task CreateCompetitionBoardEntryClicked()
+    {
+        boardEntry.CompetitionId = competition.Id;
+        var response = await boardsService.CreateCompetitionBoard(boardEntry);
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_CREATED, "Entry"));
+            competitionBoard.Add(JsonConvert.DeserializeObject<List<CompetitionBoard>>(await response.Content.ReadAsStringAsync())[0]);
+            boardEntry = new CompetitionBoard();
+            base.StateHasChanged();
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+    }
+
+
+    private async Task DeleteClicked()
+    {
+        var response = await boardsService.DeleteCompetition(competition.Id);
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Competition"));
+            Task.Delay(3000).Wait();
+            navigationManager.NavigateTo($"/boards");
+        }
+    }
+
+    private async Task RemoveCompetitionBoardEntryClicked(CompetitionBoard entry)
+    {
+        var response = await boardsService.DeleteCompetitionBoard(entry.Id);
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Entry"));
+            competitionBoard.Remove(entry);
+            base.StateHasChanged();
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+    }
+
+    private async Task FavoriteToogle()
+    {
+        var response = await favoritesService.ToogleFavorite(new Favorite(int.Parse(Id)));
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, ConstValues.MSG_GENERIC_UPDATED);
+            isEditing = false;
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
     }
 
     private void ClubDetails(int id)
@@ -245,81 +314,14 @@ else
         navigationManager.NavigateTo($"/clubs/{id}");
     }
 
-    private async Task SaveClicked()
+    private void IsEditingToggle()
     {
-        var result = await boardsService.UpdateCompetition(competition);
-
-        foreach(var c in competitionBoardWithClubs)
-            _ = boardsService.UpdateCompetitionBoard(c.Competition);
-
-        if (!200.Equals(result.StatusCode))
-            toastService.ShowToast(ToastLevel.Error,@<text>Error</text>);
-        else
-        {
-            toastService.ShowToast(ToastLevel.Success, @<text>Athlete updated</text>);
-            isEditing = false;
-        }
+        isEditing = isEditing ? false : true;
     }
 
-    private async Task CreateCompetitionBoard()
+    private async Task LoadClubsList()
     {
-        board1.CompetitionId = competition.Id;
-        var result = await boardsService.CreateCompetitionBoard(board1);
-        if(result.Count != 0)
-        {
-            toastService.ShowToast(ToastLevel.Success, @<text>Entry added</text>);
-            var club = await RestUtils.GetClubName(await localStorage.GetItemAsync<string>(Utils.TOKEN), result[0].ClubId);
-            competitionBoardWithClubs.Add(new CompetitionBoardWithClub(result[0], club));
-            board1 = new CompetitionBoard();
-            base.StateHasChanged();
-        }
-        else
-        {
-            toastService.ShowToast(ToastLevel.Error,@<text>Error</text>);
-        }
-    }
-
-
-    private async Task DeleteClicked()
-    {
-        var result = await boardsService.DeleteCompetition(competition.Id);
-
-        if (!200.Equals(result.StatusCode))
-            toastService.ShowToast(ToastLevel.Error,@<text>Error</text>);
-        else
-        {
-            toastService.ShowToast(ToastLevel.Success, @<text>Competition deleted</text>);
-            Task.Delay(3000).Wait();
-            navigationManager.NavigateTo($"/boards");
-        }
-    }
-
-    private async Task RemoveCompetitionBoard(CompetitionBoardWithClub competitionBoardWithClub)
-    {
-        var result = await boardsService.DeleteCompetitionBoard(competitionBoardWithClub.Competition.Id);
-
-        if (!200.Equals(result.StatusCode))
-            toastService.ShowToast(ToastLevel.Error,@<text>Error</text>);
-        else
-        {
-            toastService.ShowToast(ToastLevel.Success, @<text>Entry deleted</text>);
-            competitionBoardWithClubs.Remove(competitionBoardWithClub);
-            base.StateHasChanged();
-        }
-    }
-    
-    private async Task ToogleFavorite()
-    {
-        Favorite favorite = new Favorite();
-        favorite.CompetitionId = int.Parse(Id);
-        var result = await favoritesService.ToogleFavorite(favorite);
-        
-        if (!200.Equals(result.StatusCode))
-            toastService.ShowToast(ToastLevel.Error,@<text>Error</text>);
-        else
-        {
-            toastService.ShowToast(ToastLevel.Success, @<text>Updated</text>);
-            isEditing = false;
-        }
+        clubs.Add(new Club { Name = ConstValues.OPTION_GENERIC_SELECT });
+        clubs.AddRange(await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetClubs());
     }
 }

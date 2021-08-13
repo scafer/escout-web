@@ -1,6 +1,4 @@
 ﻿@page "/signIn"
-@using escout.Models.Rest.GenericObjects
-@using escout.Models.Rest.Authentication
 
 @if (isLoading)
 {
@@ -28,16 +26,27 @@ else
     </body>
 }
 
-@code{
+@code {
     [CascadingParameter]
     BlazoredModalInstance BlazoredModal { get; set; }
 
     private bool isLoading = false;
     private User user = new User();
 
-    private void AboutClicked() => Modal.Show<AboutPage>("About:");
-    private void SignUpClicked() => Modal.Show<SignUpPage>("Sign Up");
-    private void ForgotPasswordClicked() => Modal.Show<ForgotPasswordPage>("Forgot Password");
+    private void AboutClicked()
+    {
+        Modal.Show<AboutPage>("About:");
+    }
+
+    private void SignUpClicked()
+    {
+        Modal.Show<SignUpPage>("Sign Up");
+    }
+
+    private void ForgotPasswordClicked()
+    {
+        Modal.Show<ForgotPasswordPage>("Forgot Password");
+    }
 
     private async Task SignInClicked()
     {
@@ -45,26 +54,29 @@ else
 
         if (!string.IsNullOrEmpty(user.Username) || !string.IsNullOrEmpty(user.Password))
         {
-            var response = await new RestConnector().PostObjectAsync(RestConnector.SIGN_IN,
+            var response = await new RestConnector().PostObjectAsync(RestConstValues.SIGN_IN,
                 new User(user.Username, RestUtils.GenerateSha256String(user.Password), string.Empty, 0));
 
-            if (200.Equals((int)response.StatusCode))
+            if (response.IsSuccessStatusCode)
             {
                 var auth = JsonConvert.DeserializeObject<AuthData>(await response.Content.ReadAsStringAsync());
 
-                await localStorage.SetItemAsync(Utils.TOKEN, auth.Token);
-                await localStorage.SetItemAsync(Utils.USER_ID, auth.Id);
+                await localStorage.SetItemAsync(ConstValues.TOKEN, auth.Token);
+                await localStorage.SetItemAsync(ConstValues.USER_ID, auth.Id);
 
-                toastService.ShowSuccess("Welcome to eScout");
+                toastService.ShowSuccess(ConstValues.MSG_WELCOME);
                 Task.Delay(3000).Wait();
                 navigationManager.NavigateTo($"/");
             }
-
             else
+            {
                 toastService.ShowError(await response.Content.ReadAsStringAsync());
+            }
         }
         else
-            toastService.ShowError("Fill username and password!");
+        {
+            toastService.ShowError(ConstValues.MSG_FILL_USER_PASSWORD);
+        }
 
         isLoading = false;
     }

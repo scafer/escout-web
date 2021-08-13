@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace escout.Models.Rest.GenericObjects
 {
@@ -36,6 +37,9 @@ namespace escout.Models.Rest.GenericObjects
 
         [JsonProperty("updated")]
         public string Updated { get; set; }
+
+        [JsonProperty("displayOptions")]
+        public Dictionary<string, string> DisplayOptions { get; set; }
 
         public User() { }
 
