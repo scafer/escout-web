@@ -82,7 +82,7 @@ else
 
     private void NewClubClicked()
     {
-        Modal.Show<NewClubPage>("New Club");
+        Modal.Show<NewClubPage>(string.Format(ConstValues.MSG_GENERIC_OBJECT_NEW, "Club"));
     }
 
     private void ClubDetails(Club club)

@@ -122,12 +122,12 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success, "Club saved.");
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_SAVED, "Club"));
             await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         }
         else
         {
-            toastService.ShowToast(ToastLevel.Error, "Couldn't create new club.");
+            toastService.ShowToast(ToastLevel.Error, string.Format(ConstValues.MSG_ERROR_CREATING_OBJECT, "club"));
         }
 
         isLoading = false;

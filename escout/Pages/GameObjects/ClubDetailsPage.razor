@@ -169,7 +169,7 @@ else
         favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
 
         club = await clubService.GetClubById(int.Parse(clubId));
-        image = club.DisplayOptions.ContainsKey("imageUrl") ? new Image { ImageUrl = club.DisplayOptions["imageUrl"] } : new Image { ImageUrl = "/images/club_fill-BLUE.svg" };
+        image = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(club.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "club_fill-BLUE")) };
 
         isLoading = false;
         base.StateHasChanged();
@@ -202,7 +202,7 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success, "Club updated");
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_UPDATED, "Club"));
             isEditing = false;
         }
         else
@@ -217,7 +217,7 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success, "Club deleted");
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Club"));
             Task.Delay(3000).Wait();
             navigationManager.NavigateTo($"/clubs");
         }

@@ -64,12 +64,12 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success, "Competition saved.");
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_SAVED, "Competition"));
             await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         }
         else
         {
-            toastService.ShowToast(ToastLevel.Error, "Couldn't create new competition.");
+            toastService.ShowToast(ToastLevel.Error, string.Format(ConstValues.MSG_ERROR_CREATING_OBJECT, "competition"));
         }
         isLoading = false;
 

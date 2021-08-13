@@ -73,7 +73,7 @@ else
 
     private void NewAthleteClicked()
     {
-        Modal.Show<NewAthletePage>("New Athlete");
+        Modal.Show<NewAthletePage>(string.Format(ConstValues.MSG_GENERIC_OBJECT_NEW, "Athlete"));
     }
 
     private void AthleteDetails(Athlete athlete)

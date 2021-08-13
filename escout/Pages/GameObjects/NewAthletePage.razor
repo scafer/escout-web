@@ -111,7 +111,7 @@ else
     private async void Start()
     {
         athletesService = new AthleteService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
-        clubs.Add(new Club { Name = "Select..." });
+        clubs.Add(new Club { Name = ConstValues.OPTION_GENERIC_SELECT });
         clubs.AddRange(await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetClubs());
         base.StateHasChanged();
     }
@@ -123,12 +123,12 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success, "Athlete saved.");
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_SAVED, "Athlete"));
             await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         }
         else
         {
-            toastService.ShowToast(ToastLevel.Error, "Couldn't create new athlete.");
+            toastService.ShowToast(ToastLevel.Error, string.Format(ConstValues.MSG_ERROR_CREATING_OBJECT, "athlete"));
         }
 
         isLoading = false;

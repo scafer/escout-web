@@ -105,8 +105,7 @@ namespace escout.Services.Generic
 
         public async Task<HttpResponseMessage> UpdateClub(Club club)
         {
-            var request = RestConstValues.CLUB;
-            return await new RestConnector(token).PutObjectAsync(request, club);
+            return await new RestConnector(token).PutObjectAsync(RestConstValues.CLUB, club);
         }
 
         public async Task<HttpResponseMessage> DeleteClub(int clubId)

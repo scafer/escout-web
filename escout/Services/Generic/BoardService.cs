@@ -95,8 +95,7 @@ namespace escout.Services.Generic
 
         public async Task<HttpResponseMessage> UpdateCompetition(Competition competitionId)
         {
-            var request = RestConstValues.COMPETITION;
-            return await new RestConnector(token).PutObjectAsync(request, competitionId);
+            return await new RestConnector(token).PutObjectAsync(RestConstValues.COMPETITION, competitionId);
         }
 
         public async Task<HttpResponseMessage> DeleteCompetition(int competitionId)
@@ -107,16 +106,14 @@ namespace escout.Services.Generic
 
         public async Task<HttpResponseMessage> CreateCompetitionBoard(CompetitionBoard board)
         {
-            var request = RestConstValues.COMPETITION_BOARD;
             var obj = new List<CompetitionBoard>() { board };
-            return await new RestConnector(token).PostObjectAsync(request, obj);
+            return await new RestConnector(token).PostObjectAsync(RestConstValues.COMPETITION_BOARD, obj);
         }
 
         public async Task<CompetitionBoard> UpdateCompetitionBoard(CompetitionBoard board)
         {
             var result = new CompetitionBoard();
-            var request = RestConstValues.COMPETITION_BOARD;
-            var response = await new RestConnector(token).PutObjectAsync(request, board);
+            var response = await new RestConnector(token).PutObjectAsync(RestConstValues.COMPETITION_BOARD, board);
 
             if (response.IsSuccessStatusCode)
             {
@@ -141,6 +138,7 @@ namespace escout.Services.Generic
             if (response.IsSuccessStatusCode)
             {
                 var _favorites = JsonConvert.DeserializeObject<List<Favorite>>(await response.Content.ReadAsStringAsync());
+
                 foreach (var f in _favorites)
                 {
                     competitions.Add(await GetCompetitionById(int.Parse(f.CompetitionId.ToString())));

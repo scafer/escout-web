@@ -217,7 +217,7 @@ else
         competitionBoard = await boardsService.GetCompetitionBoardById(int.Parse(competitionId));
 
         competitionBoard = competitionBoard.OrderBy(c => c.Id).ToList();
-        image = competition.DisplayOptions.ContainsKey("imageUrl") ? new Image { ImageUrl = competition.DisplayOptions["imageUrl"] } : new Image { ImageUrl = "/images/competition_fill-BLUE.svg" };
+        image = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(competition.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "competition_fill-BLUE")) };
 
         isLoading = false;
         base.StateHasChanged();
@@ -238,7 +238,7 @@ else
         }
         else
         {
-            toastService.ShowToast(ToastLevel.Success, "Athlete updated");
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_UPDATED, "Competition"));
             isEditing = false;
         }
     }
@@ -250,7 +250,7 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success, "Entry added");
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_CREATED, "Entry"));
             competitionBoard.Add(JsonConvert.DeserializeObject<List<CompetitionBoard>>(await response.Content.ReadAsStringAsync())[0]);
             boardEntry = new CompetitionBoard();
             base.StateHasChanged();
@@ -272,7 +272,7 @@ else
         }
         else
         {
-            toastService.ShowToast(ToastLevel.Success, "Competition deleted");
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Competition"));
             Task.Delay(3000).Wait();
             navigationManager.NavigateTo($"/boards");
         }
@@ -284,7 +284,7 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success, "Entry deleted");
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Entry"));
             competitionBoard.Remove(entry);
             base.StateHasChanged();
         }
@@ -321,7 +321,7 @@ else
 
     private async Task LoadClubsList()
     {
-        clubs.Add(new Club { Name = "Select..." });
+        clubs.Add(new Club { Name = ConstValues.OPTION_GENERIC_SELECT });
         clubs.AddRange(await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetClubs());
     }
 }

@@ -84,7 +84,7 @@ else
 
     private void NewGameClicked()
     {
-        Modal.Show<NewGamePage>("New Game");
+        Modal.Show<NewGamePage>(string.Format(ConstValues.MSG_GENERIC_OBJECT_NEW, "game"));
     }
 
     private void GameDetails(Game game)

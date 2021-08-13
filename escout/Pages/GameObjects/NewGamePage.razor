@@ -122,9 +122,9 @@ else
     private async void Start()
     {
         gameService = new GameService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
-        clubs.Add(new Club { Name = "Select..." });
+        clubs.Add(new Club { Name = ConstValues.OPTION_GENERIC_SELECT });
         clubs.AddRange(await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetClubs());
-        competitions.Add(new Competition { Name = "Select..." });
+        competitions.Add(new Competition { Name = ConstValues.OPTION_GENERIC_SELECT });
         competitions.AddRange(await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetCompetitions());
         base.StateHasChanged();
     }
@@ -137,12 +137,12 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            toastService.ShowSuccess("Game saved.");
+            toastService.ShowSuccess(string.Format(ConstValues.MSG_GENERIC_OBJECT_SAVED, "Game"));
             await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         }
         else
         {
-            toastService.ShowError("Couldn't create new game.");
+            toastService.ShowError(string.Format(ConstValues.MSG_ERROR_CREATING_OBJECT, "game"));
         }
 
         isLoading = false;

@@ -25,6 +25,7 @@ namespace escout.Services.Rest
         public async Task<HttpResponseMessage> GetObjectAsync(string conn)
         {
             var response = new HttpResponseMessage();
+
             try
             {
                 using var client = new HttpClient();
@@ -35,12 +36,14 @@ namespace escout.Services.Rest
             {
                 Console.WriteLine(ex);
             }
+
             return response;
         }
 
         public async Task<HttpResponseMessage> PostObjectAsync(string conn, object data)
         {
             var response = new HttpResponseMessage();
+
             try
             {
                 using var client = new HttpClient();
@@ -52,12 +55,14 @@ namespace escout.Services.Rest
             {
                 Console.WriteLine(ex);
             }
+
             return response;
         }
 
         public async Task<HttpResponseMessage> PutObjectAsync(string conn, object data)
         {
             var response = new HttpResponseMessage();
+
             try
             {
                 using var client = new HttpClient();
@@ -69,12 +74,14 @@ namespace escout.Services.Rest
             {
                 Console.WriteLine(ex);
             }
+
             return response;
         }
 
         public async Task<HttpResponseMessage> DeleteObjectAsync(string conn)
         {
             var response = new HttpResponseMessage();
+
             try
             {
                 using var client = new HttpClient();
@@ -85,6 +92,7 @@ namespace escout.Services.Rest
             {
                 Console.WriteLine(ex);
             }
+
             return response;
         }
 
@@ -97,6 +105,5 @@ namespace escout.Services.Rest
         {
             return Environment.GetEnvironmentVariable("ESCOUT_SERVER_URL") ?? "https://escout-server.herokuapp.com";
         }
-
     }
 }

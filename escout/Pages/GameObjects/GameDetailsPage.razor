@@ -216,8 +216,8 @@ else
             }
         }
 
-        homeTeamImage = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(homeTeam.DisplayOptions, "imageUrl", "/images/athlete_fill-BLUE.svg") };
-        visitorTeamImage = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(visitorTeam.DisplayOptions, "imageUrl", "/images/athlete_fill-BLUE.svg") };
+        homeTeamImage = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(homeTeam.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "club_fill-BLUE")) };
+        visitorTeamImage = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(visitorTeam.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "club_fill-BLUE")) };
 
         await LoadStatistics(gameData.Game.Id);
 
@@ -273,7 +273,7 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success, "Game updated");
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_UPDATED, "Game"));
             isEditing = false;
         }
         else
@@ -288,7 +288,7 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            toastService.ShowToast(ToastLevel.Success, "Game deleted");
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Game"));
             Task.Delay(3000).Wait();
             navigationManager.NavigateTo($"/games");
         }
