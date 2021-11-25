@@ -1,6 +1,6 @@
-﻿using escout.Models.Rest.GameObjects;
+﻿using System.Collections.Generic;
+using escout.Models.Rest.GameObjects;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace escout.Models.Rest.GameStatistics
 {

@@ -1,10 +1,10 @@
-﻿using escout.Models.Rest.GameObjects;
+﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+using escout.Models.Rest.GameObjects;
 using escout.Models.Rest.GenericObjects;
 using escout.Services.Rest;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace escout.Services.Generic
 {

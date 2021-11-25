@@ -1,7 +1,7 @@
-﻿using escout.Models.Rest.GameObjects;
-using escout.Services.Rest;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
+using escout.Models.Rest.GameObjects;
+using escout.Services.Rest;
 
 namespace escout.Services.Generic
 {
