@@ -132,7 +132,6 @@ else
     private async Task NewGameClicked()
     {
         isLoading = true;
-        game.UserId = await localStorage.GetItemAsync<int>(ConstValues.USER_ID);
         var response = await gameService.CreateGame(game);
 
         if (response.IsSuccessStatusCode)
