@@ -19,36 +19,40 @@
 
 @if (isLoading)
 {
-    <div class="spinner"></div> }
+    <div class="spinner"></div>
+}
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Fullname</th>
-                <th>Country</th>
-                <th>Founded</th>
-                <th>Colors</th>
-                <th>Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var club in clubs)
-            {
+    <div class="overflow">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@club.Id</td>
-                    <td>@club.Name</td>
-                    <td>@club.Fullname</td>
-                    <td>@club.Country</td>
-                    <td>@club.Founded</td>
-                    <td>@club.Colors</td>
-                    <td><button @onclick="@(() => ClubDetails(club))" class="btn btn-secondary">+</button></td>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Fullname</th>
+                    <th>Country</th>
+                    <th>Founded</th>
+                    <th>Colors</th>
+                    <th>Details</th>
                 </tr>
-            }
-        </tbody>
-    </table>}
+            </thead>
+            <tbody>
+                @foreach (var club in clubs)
+                {
+                    <tr>
+                        <td>@club.Id</td>
+                        <td>@club.Name</td>
+                        <td>@club.Fullname</td>
+                        <td>@club.Country</td>
+                        <td>@club.Founded</td>
+                        <td>@club.Colors</td>
+                        <td><button @onclick="@(() => ClubDetails(club))" class="btn btn-secondary">+</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
 
 @code {
     private bool isLoading = true;
