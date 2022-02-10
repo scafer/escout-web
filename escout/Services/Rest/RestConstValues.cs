@@ -41,8 +41,8 @@
 
         //Game-Statistics API Endpoints
         public const string V1_GAME_STATISTICS = "/api/v1/game-statistics/";
-        public const string CLUB_STATISTICS = V1_GAME_STATISTICS + "club-statistics";
-        public const string GAME_STATISTICS = V1_GAME_STATISTICS + "game-statistics";
-        public const string ATHLETE_STATISTICS = V1_GAME_STATISTICS + "athlete-statistics";
+        public const string CLUB_STATISTICS = V1_GAME_STATISTICS + "club";
+        public const string GAME_STATISTICS = V1_GAME_STATISTICS + "game";
+        public const string ATHLETE_STATISTICS = V1_GAME_STATISTICS + "athlete";
     }
 }
