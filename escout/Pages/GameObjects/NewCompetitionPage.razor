@@ -1,77 +1,77 @@
 ﻿@if (isLoading)
 {
-    <div class="spinner"></div>
+	<div class="spinner"></div>
 }
 else
 {
-    <div class="center">
-        <EditForm Model="@competition" OnValidSubmit="@NewCompetitionClicked">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-            <div class="row justify-content-start">
-                <div class="col-5 font-weight-bold">
-                    <label class="label-right-align">Name:</label>
-                </div>
-                <div class="col-7 mb-1">
-                    <InputText @bind-Value="competition.Name" placeholder="Name" class="form-control" />
-                </div>
-            </div>
-            <div class="row justify-content-start">
-                <div class="col-5 font-weight-bold">
-                    <label class="label-right-align">Edition:</label>
-                </div>
-                <div class="col-7 mb-1">
-                    <InputText @bind-Value="competition.Edition" placeholder="Edition" class="form-control" />
-                </div>
-            </div>
-            <br />
-            <div>
-                <button class="btn btn-primary" value="Save">Save</button>
-                <span>&nbsp;</span>
-                <button @onclick="Cancel" class="btn btn-secondary" value="Clear">Cancel</button>
-            </div>
-        </EditForm>
-    </div>
+	<div class="center">
+		<EditForm Model="@competition" OnValidSubmit="@NewCompetitionClicked">
+			<DataAnnotationsValidator />
+			<ValidationSummary />
+			<div class="row justify-content-start">
+				<div class="col-5 font-weight-bold">
+					<label class="label-right-align">Name:</label>
+				</div>
+				<div class="col-7 mb-1">
+					<InputText @bind-Value="competition.Name" placeholder="Name" class="form-control" />
+				</div>
+			</div>
+			<div class="row justify-content-start">
+				<div class="col-5 font-weight-bold">
+					<label class="label-right-align">Edition:</label>
+				</div>
+				<div class="col-7 mb-1">
+					<InputText @bind-Value="competition.Edition" placeholder="Edition" class="form-control" />
+				</div>
+			</div>
+			<br />
+			<div>
+				<button class="btn btn-primary" value="Save">Save</button>
+				<span>&nbsp;</span>
+				<button @onclick="Cancel" class="btn btn-secondary" value="Clear">Cancel</button>
+			</div>
+		</EditForm>
+	</div>
 }
 
 @code {
-    [CascadingParameter]
-    BlazoredModalInstance BlazoredModal { get; set; }
+	[CascadingParameter]
+	BlazoredModalInstance BlazoredModal { get; set; }
 
-    private bool isLoading = false;
-    public Competition competition;
-    private BoardsService boardsService;
+	private bool isLoading = false;
+	public Competition competition;
+	private BoardsService boardsService;
 
-    private void Cancel() => BlazoredModal.CancelAsync();
+	private void Cancel() => BlazoredModal.CancelAsync();
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        Start();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		Start();
+	}
 
-    private async void Start()
-    {
-        competition = new Competition();
-        boardsService = new BoardsService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
-    }
+	private async void Start()
+	{
+		competition = new Competition();
+		boardsService = new BoardsService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+	}
 
-    private async Task NewCompetitionClicked()
-    {
-        isLoading = true;
-        competition.SportId = 1;
-        var response = await boardsService.CreateCompetition(competition);
+	private async Task NewCompetitionClicked()
+	{
+		isLoading = true;
+		competition.SportId = 1;
+		var response = await boardsService.CreateCompetition(competition);
 
-        if (response.IsSuccessStatusCode)
-        {
-            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_SAVED, "Competition"));
-            await BlazoredModal.CloseAsync(ModalResult.Ok(true));
-        }
-        else
-        {
-            toastService.ShowToast(ToastLevel.Error, string.Format(ConstValues.MSG_ERROR_CREATING_OBJECT, "competition"));
-        }
-        isLoading = false;
+		if (response.IsSuccessStatusCode)
+		{
+			toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_SAVED, "Competition"));
+			await BlazoredModal.CloseAsync(ModalResult.Ok(true));
+		}
+		else
+		{
+			toastService.ShowToast(ToastLevel.Error, string.Format(ConstValues.MSG_ERROR_CREATING_OBJECT, "competition"));
+		}
+		isLoading = false;
 
-    }
+	}
 }

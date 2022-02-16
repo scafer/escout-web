@@ -1,56 +1,56 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="sidebar">
-    <NavMenu />
+	<NavMenu />
 </div>
 
 <div class="main">
-    <div class="top-row px-4">
-        <button @onclick="SignOutClicked" class="btn btn-dark">Sign Out</button>
-    </div>
+	<div class="top-row px-4">
+		<button @onclick="SignOutClicked" class="btn btn-dark">Sign Out</button>
+	</div>
 
-    <div class="content px-4">
-        @Body
-    </div>
+	<div class="content px-4">
+		@Body
+	</div>
 </div>
 
 <BlazoredToasts Position="ToastPosition.BottomRight"
-                Timeout="5"
-                IconType="IconType.FontAwesome"
-                ShowProgressBar="true" />
+				Timeout="5"
+				IconType="IconType.FontAwesome"
+				ShowProgressBar="true" />
 
-@code{
-    protected override Task OnInitializedAsync()
-    {
-        _ = Start();
-        return base.OnInitializedAsync();
-    }
+@code {
+	protected override Task OnInitializedAsync()
+	{
+		_ = Start();
+		return base.OnInitializedAsync();
+	}
 
-    private async Task Start()
-    {
-        string token = await localStorage.GetItemAsync<string>(ConstValues.TOKEN);
+	private async Task Start()
+	{
+		string token = await localStorage.GetItemAsync<string>(ConstValues.TOKEN);
 
-        if (string.IsNullOrEmpty(token))
-        {
-            navigationManager.NavigateTo($"/signIn");
-        }
+		if (string.IsNullOrEmpty(token))
+		{
+			navigationManager.NavigateTo($"/signIn");
+		}
 
-        else if (!string.IsNullOrEmpty(token))
-        {
-            var response = await new RestConnector(token).GetObjectAsync(RestConstValues.AUTHENTICATED);
+		else if (!string.IsNullOrEmpty(token))
+		{
+			var response = await new RestConnector(token).GetObjectAsync(RestConstValues.AUTHENTICATED);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                navigationManager.NavigateTo($"/signIn");
-            }
-        }
-    }
+			if (!response.IsSuccessStatusCode)
+			{
+				navigationManager.NavigateTo($"/signIn");
+			}
+		}
+	}
 
-    public async Task SignOutClicked()
-    {
-        await localStorage.SetItemAsync(ConstValues.TOKEN, string.Empty);
-        toastService.ShowToast(ToastLevel.Info, "You are no longer authenticated");
-        Task.Delay(3000).Wait();
-        navigationManager.NavigateTo($"/SignIn");
-    }
+	public async Task SignOutClicked()
+	{
+		await localStorage.SetItemAsync(ConstValues.TOKEN, string.Empty);
+		toastService.ShowToast(ToastLevel.Info, "You are no longer authenticated");
+		Task.Delay(3000).Wait();
+		navigationManager.NavigateTo($"/SignIn");
+	}
 }

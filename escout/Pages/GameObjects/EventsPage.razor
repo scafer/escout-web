@@ -4,54 +4,54 @@
 
 @if (isLoading)
 {
-    <div class="spinner"></div>
+	<div class="spinner"></div>
 }
 else
 {
-    <div class="overflow">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Key</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var evt in events)
-                {
-                    <tr>
-                        <td><img src="@GenericUtils.GetImageUrl(evt.Key)" alt="@evt.Name" width="75" height="75"></td>
-                        <td>@evt.Key</td>
-                        <td>@evt.Name</td>
-                        <td>@evt.Description</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+	<div class="overflow-auto">
+		<table class="table table-sm table-hover align-middle">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Key</th>
+					<th>Name</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var evt in events)
+				{
+					<tr>
+						<td><img src="@GenericUtils.GetImageUrl(evt.Key)" alt="@evt.Name" style="height:4rem;"></td>
+						<td>@evt.Key</td>
+						<td>@evt.Name</td>
+						<td>@evt.Description</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
 }
 
 @code {
-    private bool isLoading = true;
-    private List<Event> events;
-    private EventService eventService;
+	private bool isLoading = true;
+	private List<Event> events;
+	private EventService eventService;
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        Start();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		Start();
+	}
 
-    private async void Start()
-    {
-        eventService = new EventService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
-        events = await eventService.SearchExecuted(null, null);
-        events = events.OrderBy(c => c.Id).ToList();
+	private async void Start()
+	{
+		eventService = new EventService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+		events = await eventService.SearchExecuted(null, null);
+		events = events.OrderBy(c => c.Id).ToList();
 
-        isLoading = false;
-        base.StateHasChanged();
-    }
+		isLoading = false;
+		base.StateHasChanged();
+	}
 }

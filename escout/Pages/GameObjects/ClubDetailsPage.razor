@@ -2,243 +2,309 @@
 
 @if (isLoading)
 {
-    <div class="spinner"></div>
+	<div class="spinner"></div>
 }
 else
 {
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col">
-                <div class="row justify-content-end">
-                    @if (!isEditing)
-                    {
-                        <button class="btn btn-info right-margin" @onclick="FavoriteToogle">Favorite</button>
-                        <button class="btn btn-dark right-margin" @onclick="IsEditingToggle">Edit</button>
-                        <button class="btn btn-danger" @onclick="DeleteClicked">Delete</button>
-                    }
-                    else
-                    {
-                        <button class="btn btn-success right-margin" @onclick="SaveClicked">Save</button>
-                        <button class="btn btn-dark" @onclick="IsEditingToggle">Cancel</button>
-                    }
-                </div>
-            </div>
-        </div>
+	<div class="container-fluid">
+		<div class="row justify-content-end mb-2">
+			<div class="btn-group col-auto" role="group">
+				@if (!isEditing)
+				{
+					<button class="btn btn-outline-primary" @onclick="FavoriteToogle">Favorite</button>
+					<button class="btn btn-outline-dark" @onclick="IsEditingToggle">Edit</button>
+					<button class="btn btn-outline-danger" @onclick="DeleteClicked">Delete</button>
+				}
+				else
+				{
+					<button class="btn btn-outline-success" @onclick="SaveClicked">Save</button>
+					<button class="btn btn-outline-dark" @onclick="IsEditingToggle">Cancel</button>
+				}
+			</div>
+		</div>
 
-        <div class="row">
-            <div class="col-lg-3 justify-content-center">
-                <img class="bg-transparent img-thumbnail" src="@(image.ImageUrl)" alt="@(image.Description)" style="height:100%;" />
-            </div>
-            <div class="col-9">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h3 class="font-weight-bold">@club.Name</h3>
-                        <h5>@club.Fullname</h5>
-                        <h6 class="text-info">@club.Colors</h6>
-                        <div class="col-9"><hr /></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <h4 class="font-weight-bold">Club Details</h4>
-                        <div class="row">
-                            <div class="col-6">
-                                <h6>Name:</h6>
-                                <h6>Fullname:</h6>
-                                <h6>Country:</h6>
-                                <h6>Founded:</h6>
-                                <h6>Members:</h6>
-                            </div>
-                            <div class="col-6">
-                                @if (!isEditing)
-                                {
-                                    <h6 class="text-info">@club.Name</h6>
-                                    <h6 class="text-info">@club.Fullname</h6>
-                                    <h6 class="text-info">@club.Country</h6>
-                                    <h6 class="text-info">@club.Founded</h6>
-                                    <h6 class="text-info">@club.Members</h6>
-                                }
-                                else
-                                {
-                                    <input @bind-value="club.Name" />
-                                    <input @bind-value="club.Fullname" />
-                                    <input @bind-value="club.Country" />
-                                    <input @bind-value="club.Founded" />
-                                    <input @bind-value="club.Members" />
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <h4 class="font-weight-bold"></h4><br />
-                        <div class="row">
-                            <div class="col-6">
-                                <h6>Total games:*</h6>
-                                <h6>Home Page:</h6>
-                                <h6>Stadium:</h6>
-                                <h6>Address:</h6>
-                            </div>
-                            <div class="col-6">
-                                <h6 class="text-info">0</h6>
-                                @if (!isEditing)
-                                {
-                                    <h6 class="text-info">@club.Homepage</h6>
-                                    <h6 class="text-info">@club.Stadium</h6>
-                                    <h6 class="text-info">@club.Address</h6>
-                                }
-                                else
-                                {
-                                    <input @bind-value="club.Homepage" />
-                                    <input @bind-value="club.Stadium" />
-                                    <input @bind-value="club.Address" />
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+		<div class="row">
+			<div class="col-lg-2">
+				<img class="bg-transparent img-thumbnail" src="@(image.ImageUrl)" alt="@(image.Description)" style="height:20rem;" />
+			</div>
+			<div class="col">
+				<div class="row">
+					<div class="col-*">
+						<h3 class="font-weight-bold">@club.Name</h3>
+						<h5>@club.Fullname</h5>
+						<h6 class="text-primary">@club.Colors</h6>
+						<div class="col-9"><hr /></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<h4 class="font-weight-bold">Club Details</h4>
+						<div class="row">
+							<div class="col-6">
+								<table class="table table-borderless table-sm">
+									<thead />
+									<tbody>
+										<tr>
+											<th scope="row">Name:</th>
+											@if (!isEditing)
+											{
+												<td>@club.Name</td>
+											}
+											else
+											{
+												<td><input @bind-value="club.Name" class="form-control" /></td>
+											}
+										</tr>
+										<tr>
+											<th scope="row">Fullname:</th>
+											@if (!isEditing)
+											{
+												<td>@club.Fullname</td>
+											}
+											else
+											{
+												<td><input @bind-value="club.Fullname" class="form-control" /></td>
+											}
+										</tr>
+										<tr>
+											<th scope="row">Country:</th>
+											@if (!isEditing)
+											{
+												<td>@club.Country</td>
+											}
+											else
+											{
+												<td><input @bind-value="club.Country" class="form-control" /></td>
+											}
+										</tr>
+										<tr>
+											<th scope="row">Founded:</th>
+											@if (!isEditing)
+											{
+												<td>@club.Founded</td>
+											}
+											else
+											{
+												<td><input @bind-value="club.Founded" class="form-control" /></td>
+											}
+										</tr>
+										<tr>
+											<th scope="row">Members:</th>
+											@if (!isEditing)
+											{
+												<td>@club.Members</td>
+											}
+											else
+											{
+												<td><input @bind-value="club.Members" class="form-control" /></td>
+											}
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<h4 class="font-weight-bold"></h4><br />
+						<div class="row">
+							<div class="col-6">
+								<table class="table table-borderless table-sm">
+									<thead />
+									<tbody>
+										<tr>
+											<th scope="row">Total Games:</th>
+											<td>*</td>
+										</tr>
+										<tr>
+											<th scope="row">Home Page:</th>
+											@if (!isEditing)
+											{
+												<td>@club.Homepage</td>
+											}
+											else
+											{
+												<td><input @bind-value="club.Homepage" /></td>
+											}
+										</tr>
+										<tr>
+											<th scope="row">Stadium:</th>
+											@if (!isEditing)
+											{
+												<td>@club.Stadium</td>
+											}
+											else
+											{
+												<td><input @bind-value="club.Stadium" /></td>
+											}
+										</tr>
+										<tr>
+											<th scope="row">Address:</th>
+											@if (!isEditing)
+											{
+												<td>@club.Address</td>
+											}
+											else
+											{
+												<td><input @bind-value="club.Address" /></td>
+											}
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        <div class="row"><div class="col-12"><hr /></div></div>
+		<div class="row"><div class="col-12"><hr /></div></div>
 
-        <div class="row">
-            <div class="col-12">
-                <h3 class="font-weight-bold">Statistics</h3>
-            </div>
-            <div class="col-12">
-                <div class="center">
-                    <button class="btn btn-warning m-5" @onclick="LoadStatistics">Load</button>
-                </div>
-                @if (stats.Count != 0)
-                {
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Event Name</th>
-                                <th>Count</th>
-                                <th>Average</th>
-                                <th>Standard Deviation</th>
-                                <th>Median</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var stat in stats)
-                            {
-                                <tr>
-                                    <td><img src="@GenericUtils.GetImageUrl(stat.EventKey)" alt="@stat.EventName"></td>
-                                    <td>@stat.EventName</td>
-                                    <td>@stat.Count</td>
-                                    <td>@stat.Average</td>
-                                    <td>@stat.StandardDeviation</td>
-                                    <td>@stat.Median</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                }
-            </div>
-        </div>
-    </div>
+		<div class="accordion" id="accordionParent">
+			<div class="accordion-item">
+				<h2 class="accordion-header" id="headingOne">
+					<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+						Statistics
+					</button>
+				</h2>
+				<div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionParent">
+					<div class="accordion-body row">
+						<div class="center mb-2">
+							<button class="btn btn-warning" @onclick="LoadStatisticsClick">Load</button>
+						</div>
+						@if (stats.Count != 0)
+						{
+							<div class="table-responsive">
+								<table class="table table-sm table-hover align-middle">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>Event Name</th>
+											<th>Count</th>
+											<th>Average</th>
+											<th>Standard Deviation</th>
+											<th>Median</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach (var stat in stats)
+										{
+											<tr>
+												<td><img src="@GenericUtils.GetImageUrl(stat.EventKey)" alt="@stat.EventName" style="height:3rem;"></td>
+												<td>@stat.EventName</td>
+												<td>@stat.Count</td>
+												<td>@stat.Average</td>
+												<td>@stat.StandardDeviation</td>
+												<td>@stat.Median</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							</div>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 }
 
 @code {
-    [Parameter]
-    public string Id { get; set; }
-    private bool isLoading = true;
-    private bool isEditing = false;
+	[Parameter]
+	public string Id { get; set; }
+	private bool isLoading = true;
+	private bool isEditing = false;
 
-    private ClubService clubService;
-    private FavoritesService favoritesService;
-    private Image image = new Image();
-    private Club club = new Club();
-    List<StatsTable> stats = new List<StatsTable>();
+	private ClubService clubService;
+	private FavoritesService favoritesService;
+	private Image image = new Image();
+	private Club club = new Club();
+	List<StatsTable> stats = new List<StatsTable>();
 
-    private void IsEditingToggle()
-    { isEditing = isEditing ? false : true; }
+	private void IsEditingToggle()
+	{ isEditing = isEditing ? false : true; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        Start(Id);
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		Start(Id);
+	}
 
-    private async void Start(string clubId)
-    {
-        clubService = new ClubService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
-        favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+	private async void Start(string clubId)
+	{
+		clubService = new ClubService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+		favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
 
-        club = await clubService.GetClubById(int.Parse(clubId));
-        image = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(club.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "club_fill-BLUE")) };
+		club = await clubService.GetClubById(int.Parse(clubId));
+		image = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(club.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "club_fill-BLUE")) };
 
-        isLoading = false;
-        base.StateHasChanged();
-    }
+		isLoading = false;
+		base.StateHasChanged();
+	}
 
-    private async Task LoadStatistics()
-    {
-        var statistics = await clubService.GetClubStatistics(club.Id, null);
-        var events = await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetEvents(null);
-        stats = new List<StatsTable>();
+	private async Task LoadStatisticsClick()
+	{
+		var statistics = await clubService.GetClubStatistics(club.Id, null);
+		var events = await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetEvents(null);
+		stats = new List<StatsTable>();
 
-        if (statistics.TotalStats != null)
-        {
-            foreach (Event e in events)
-            {
-                foreach (TotalStat stat in statistics.TotalStats)
-                {
-                    if (stat.EventId == e.Id)
-                    {
-                        stats.Add(new StatsTable(stat, e));
-                    }
-                }
-            }
-        }
-    }
+		if (statistics.TotalStats != null)
+		{
+			foreach (Event e in events)
+			{
+				foreach (TotalStat stat in statistics.TotalStats)
+				{
+					if (stat.EventId == e.Id)
+					{
+						stats.Add(new StatsTable(stat, e));
+					}
+				}
+			}
+		}
+	}
 
-    private async Task SaveClicked()
-    {
-        var response = await clubService.UpdateClub(club);
+	private async Task SaveClicked()
+	{
+		var response = await clubService.UpdateClub(club);
 
-        if (response.IsSuccessStatusCode)
-        {
-            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_UPDATED, "Club"));
-            isEditing = false;
-        }
-        else
-        {
-            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
-        }
-    }
+		if (response.IsSuccessStatusCode)
+		{
+			toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_UPDATED, "Club"));
+			isEditing = false;
+		}
+		else
+		{
+			toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+		}
+	}
 
-    private async Task DeleteClicked()
-    {
-        var response = await clubService.DeleteClub(club.Id);
+	private async Task DeleteClicked()
+	{
+		var response = await clubService.DeleteClub(club.Id);
 
-        if (response.IsSuccessStatusCode)
-        {
-            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Club"));
-            Task.Delay(3000).Wait();
-            navigationManager.NavigateTo($"/clubs");
-        }
-        else
-        {
-            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
-        }
-    }
+		if (response.IsSuccessStatusCode)
+		{
+			toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Club"));
+			Task.Delay(3000).Wait();
+			navigationManager.NavigateTo($"/clubs");
+		}
+		else
+		{
+			toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+		}
+	}
 
-    private async Task FavoriteToogle()
-    {
-        var response = await favoritesService.ToogleFavorite(new Favorite(int.Parse(Id)));
+	private async Task FavoriteToogle()
+	{
+		var response = await favoritesService.ToogleFavorite(new Favorite(int.Parse(Id)));
 
-        if (response.IsSuccessStatusCode)
-        {
-            toastService.ShowToast(ToastLevel.Success, ConstValues.MSG_GENERIC_UPDATED);
-            isEditing = false;
-        }
-        else
-        {
-            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
-        }
-    }
+		if (response.IsSuccessStatusCode)
+		{
+			toastService.ShowToast(ToastLevel.Success, ConstValues.MSG_GENERIC_UPDATED);
+			isEditing = false;
+		}
+		else
+		{
+			toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+		}
+	}
 }

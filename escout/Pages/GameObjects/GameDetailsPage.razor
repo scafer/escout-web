@@ -2,318 +2,351 @@
 
 @if (isLoading)
 {
-    <div class="spinner"></div>
+	<div class="spinner"></div>
 }
 else
 {
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col">
-                <div class="row justify-content-end">
-                    @if (!isEditing)
-                    {
-                        <button class="btn btn-info right-margin" @onclick="FavoriteToogle">Favorite</button>
-                        <button class="btn btn-dark right-margin" @onclick="IsEditingToggle">Edit</button>
-                        <button class="btn btn-danger" @onclick="DeleteClicked">Delete</button>
-                    }
-                    else
-                    {
-                        <button class="btn btn-success right-margin" @onclick="SaveClicked">Save</button>
-                        <button class="btn btn-dark" @onclick="IsEditingToggle">Cancel</button>
-                    }
-                </div>
-            </div>
-        </div>
+	<div class="container-fluid">
+		<div class="row justify-content-end mb-2">
+			<div class="btn-group col-auto" role="group">
+				@if (!isEditing)
+				{
+					<button class="btn btn-outline-primary" @onclick="FavoriteToogle">Favorite</button>
+					<button class="btn btn-outline-dark" @onclick="IsEditingToggle">Edit</button>
+					<button class="btn btn-outline-danger" @onclick="DeleteClicked">Delete</button>
+				}
+				else
+				{
+					<button class="btn btn-outline-success" @onclick="SaveClicked">Save</button>
+					<button class="btn btn-outline-dark" @onclick="IsEditingToggle">Cancel</button>
+				}
+			</div>
+		</div>
 
-        <div class="row text-center">
-            <div class="col-lg-3 justify-content-center">
-                <img class="bg-transparent img-thumbnail" src="@(homeTeamImage.ImageUrl)" alt="@(homeTeamImage.Description)" style="height:80%;" />
-                <h4 class="font-weight-bold">@homeTeam.Name</h4>
-                <h4 class="font-weight-bold">@gameData.Game.HomeScore</h4>
-            </div>
-            <div class="col-lg-3 justify-content-center">
-                <h4 class="font-weight-bold">Game Details</h4>
-                <div class="row">
-                    <div class="col-6">
-                        <h6>Type:</h6>
-                        <h6>Status:</h6>
-                        <h6>Location:</h6>
-                        <br />
-                        <h6>Time Start:</h6>
-                        <h6>Time End:</h6>
-                        <br />
-                        <h6>Home Score:</h6>
-                        <h6>Visitor Score:</h6>
-                    </div>
-                    <div class="col-6">
-                        @if (!isEditing)
-                        {
-                            <h6 class="text-info">@gameData.Game.Type</h6>
-                            <h6 class="text-info">@gameData.Game.Status</h6>
-                            <h6 class="text-info">@gameData.Game.Location</h6>
-                            <br />
-                            <h6 class="text-info">@gameData.Game.TimeStart</h6>
-                            <h6 class="text-info">@gameData.Game.TimeEnd</h6>
-                            <br />
-                            <h6 class="text-info">@gameData.Game.HomeScore</h6>
-                            <h6 class="text-info">@gameData.Game.VisitorScore</h6>
-                        }
-                        else
-                        {
-                            <input @bind-value="gameData.Game.Type" />
-                            <input @bind-value="gameData.Game.Status" />
-                            <input @bind-value="gameData.Game.Location" />
-                            <br />
-                            <input @bind-value="gameData.Game.TimeStart" />
-                            <input @bind-value="gameData.Game.TimeEnd" />
-                            <br />
-                            <input @bind-value="gameData.Game.HomeScore" />
-                            <input @bind-value="gameData.Game.VisitorScore" />
-                        }
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 justify-content-center">
-                <img class="bg-transparent img-thumbnail" src="@(visitorTeamImage.ImageUrl)" alt="@(visitorTeamImage.Description)" style="height:80%;" />
-                <h4 class="font-weight-bold">@visitorTeam.Name</h4>
-                <h4 class="font-weight-bold">@gameData.Game.VisitorScore</h4>
-            </div>
-        </div>
-        
-        <div class="row"><div class="col-12"><hr /></div></div>
+		<div class="row justify-content-center mb-2">
+			<div class="col-lg-3 justify-content-center text-center">
+				<img class="bg-transparent img-thumbnail" src="@(homeTeamImage.ImageUrl)" alt="@(homeTeamImage.Description)" style="height:18rem;" />
+				<h4>@homeTeam.Name</h4>
+				<h4>@gameData.Game.HomeScore</h4>
+			</div>
+			<div class="col-lg-3 justify-content-center">
+				<h4 class="text-center">Game Details</h4>
+				<br />
+				<div class="row justify-content-center">
+					<table class="table table-borderless table-sm align-middle">
+						<thead />
+						<tbody>
+							<tr>
+								<th class="text-end" scope="row">Type:</th>
+								@if (!isEditing)
+								{
+									<td>@gameData.Game.Type</td>
+								}
+								else
+								{
+									<td><input @bind-value="gameData.Game.Type" class="form-control" /></td>
+								}
+							</tr>
+							<tr>
+								<th class="text-end" scope="row">Status:</th>
+								@if (!isEditing)
+								{
+									<td>@gameData.Game.Status</td>
+								}
+								else
+								{
+									<td><input @bind-value="gameData.Game.Status" class="form-control" /></td>
+								}
+							</tr>
+							<tr>
+								<th class="text-end" scope="row">Location</th>
+								@if (!isEditing)
+								{
+									<td>@gameData.Game.Location</td>
+								}
+								else
+								{
+									<td><input @bind-value="gameData.Game.Location" class="form-control" /></td>
+								}
+							</tr>
+							<tr>
+								<th class="text-end" scope="row">Time Start:</th>
+								@if (!isEditing)
+								{
+									<td>@gameData.Game.TimeStart</td>
+								}
+								else
+								{
+									<td><input @bind-value="gameData.Game.TimeStart" class="form-control" /></td>
+								}
+							</tr>
+							<tr>
+								<th class="text-end" scope="row">Time End:</th>
+								@if (!isEditing)
+								{
+									<td>@gameData.Game.TimeEnd</td>
+								}
+								else
+								{
+									<td><input @bind-value="gameData.Game.TimeEnd" class="form-control" /></td>
+								}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="col-lg-3 justify-content-center text-center">
+				<img class="bg-transparent img-thumbnail" src="@(visitorTeamImage.ImageUrl)" alt="@(visitorTeamImage.Description)" style="height:18rem;" />
+				<h4>@visitorTeam.Name</h4>
+				<h4>@gameData.Game.VisitorScore</h4>
+			</div>
+		</div>
 
-        <div>
-            <h4 class="font-weight-bold text-center">Athletes</h4>
-            <br />
-            <div class="row">
-                <div class="col-6">
-                    <h4 class="font-weight-bold">@homeTeam.Name</h4>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Position</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var athlete in homeTeamAthletes)
-                            {
-                                <tr>
-                                    <td>@athlete.Name</td>
-                                    <td>@athlete.Position</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-6">
-                    <h4 class="font-weight-bold">@homeTeam.Name</h4>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Position</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var athlete in visitorTeamAthletes)
-                            {
-                                <tr>
-                                    <td>@athlete.Name</td>
-                                    <td>@athlete.Position</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row"><div class="col-12"><hr /></div></div>
-
-        <div>
-            <h4 class="font-weight-bold text-center">Events</h4>
-            <br />
-            <div class="row">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Event Name</th>
-                            <th>@homeTeam.Name Count</th>
-                            <th>@visitorTeam.Name Count</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var stat in homeStats)
-                        {
-                            <tr>
-                                <td><img src="@GenericUtils.GetImageUrl(stat.EventKey)" alt="@stat.EventName" width="50"></td>
-                                <td>@stat.EventName</td>
-                                <td>@stat.Count</td>
-                                <td>@getVisitorTeamEventCount(stat.EventId)</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+		<div class="accordion" id="accordionParent">
+			<div class="accordion-item">
+				<h2 class="accordion-header" id="headingOne">
+					<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+						Athletes
+					</button>
+				</h2>
+				<div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionParent">
+					<div class="accordion-body row">
+						<div class="col-6">
+							<h4 class="font-weight-bold text-center">@homeTeam.Name</h4>
+							<div class="table-responsive">
+								<table class="table table-sm table-hover align-middle">
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>Position</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach (var athlete in homeTeamAthletes)
+										{
+											<tr>
+												<td>@athlete.Name</td>
+												<td>@athlete.Position</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="col-6">
+							<h4 class="font-weight-bold text-center">@visitorTeam.Name</h4>
+							<div class="table-responsive">
+								<table class="table table-sm table-hover align-middle">
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>Position</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach (var athlete in visitorTeamAthletes)
+										{
+											<tr>
+												<td>@athlete.Name</td>
+												<td>@athlete.Position</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="accordion-item">
+				<h2 class="accordion-header" id="headingTwo">
+					<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+						Events
+					</button>
+				</h2>
+				<div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#accordionParent">
+					<div class="table-responsive m-4">
+						<table class="table table-sm table-hover align-middle">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Event Name</th>
+									<th>@homeTeam.Name Count</th>
+									<th>@visitorTeam.Name Count</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var stat in homeStats)
+								{
+									<tr>
+										<td><img src="@GenericUtils.GetImageUrl(stat.EventKey)" alt="@stat.EventName" style="height:3rem;"></td>
+										<td>@stat.EventName</td>
+										<td>@stat.Count</td>
+										<td>@getVisitorTeamEventCount(stat.EventId)</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 }
 
 @code {
-    [Parameter]
-    public string Id { get; set; }
-    private bool isLoading = true;
-    private bool isEditing = false;
+	[Parameter]
+	public string Id { get; set; }
+	private bool isLoading = true;
+	private bool isEditing = false;
 
-    private GameService gameService;
-    private FavoritesService favoritesService;
-    private Club homeTeam;
-    private Club visitorTeam;
-    private List<Athlete> homeTeamAthletes;
-    private List<Athlete> visitorTeamAthletes;
-    private List<GameEvent> homeTeamEvents = new List<GameEvent>();
-    private List<GameEvent> visitorTeamEvents = new List<GameEvent>();
-    private List<StatsTable> homeStats = new List<StatsTable>();
-    private List<StatsTable> visitorStats = new List<StatsTable>();
-    private Image homeTeamImage = new Image();
-    private Image visitorTeamImage = new Image();
-    private GameData gameData = new GameData();
+	private GameService gameService;
+	private FavoritesService favoritesService;
+	private Club homeTeam;
+	private Club visitorTeam;
+	private List<Athlete> homeTeamAthletes;
+	private List<Athlete> visitorTeamAthletes;
+	private List<GameEvent> homeTeamEvents = new List<GameEvent>();
+	private List<GameEvent> visitorTeamEvents = new List<GameEvent>();
+	private List<StatsTable> homeStats = new List<StatsTable>();
+	private List<StatsTable> visitorStats = new List<StatsTable>();
+	private Image homeTeamImage = new Image();
+	private Image visitorTeamImage = new Image();
+	private GameData gameData = new GameData();
 
-    private void IsEditingToggle() { isEditing = isEditing ? false : true; }
+	private void IsEditingToggle() { isEditing = isEditing ? false : true; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        Start(Id);
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		Start(Id);
+	}
 
-    private async void Start(string gameId)
-    {
-        gameService = new GameService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
-        favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+	private async void Start(string gameId)
+	{
+		gameService = new GameService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+		favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
 
-        gameData = await gameService.GetGameDataById(int.Parse(gameId));
-        homeTeam = gameData.Clubs[0];
-        visitorTeam = gameData.Clubs[1];
+		gameData = await gameService.GetGameDataById(int.Parse(gameId));
+		homeTeam = gameData.Clubs[0];
+		visitorTeam = gameData.Clubs[1];
 
-        homeTeamAthletes = gameData.Athletes.Where(a => a.ClubId == homeTeam.Id).ToList();
-        visitorTeamAthletes = gameData.Athletes.Where(a => a.ClubId == visitorTeam.Id).ToList();
+		homeTeamAthletes = gameData.Athletes.Where(a => a.ClubId == homeTeam.Id).ToList();
+		visitorTeamAthletes = gameData.Athletes.Where(a => a.ClubId == visitorTeam.Id).ToList();
 
-        foreach (GameEvent evt in gameData.GameEvents)
-        {
-            foreach (Athlete athlete in homeTeamAthletes)
-            {
-                if (evt.AthleteId == athlete.Id)
-                {
-                    homeTeamEvents.Add(evt);
-                }
-            }
+		foreach (GameEvent evt in gameData.GameEvents)
+		{
+			foreach (Athlete athlete in homeTeamAthletes)
+			{
+				if (evt.AthleteId == athlete.Id)
+				{
+					homeTeamEvents.Add(evt);
+				}
+			}
 
-            foreach (Athlete athlete in visitorTeamAthletes)
-            {
-                if (evt.AthleteId == athlete.Id)
-                {
-                    visitorTeamEvents.Add(evt);
-                }
-            }
-        }
+			foreach (Athlete athlete in visitorTeamAthletes)
+			{
+				if (evt.AthleteId == athlete.Id)
+				{
+					visitorTeamEvents.Add(evt);
+				}
+			}
+		}
 
-        homeTeamImage = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(homeTeam.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "club_fill-BLUE")) };
-        visitorTeamImage = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(visitorTeam.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "club_fill-BLUE")) };
+		homeTeamImage = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(homeTeam.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "club_fill-BLUE")) };
+		visitorTeamImage = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(visitorTeam.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "club_fill-BLUE")) };
 
-        await LoadStatistics(gameData.Game.Id);
+		await LoadStatistics(gameData.Game.Id);
 
-        isLoading = false;
-        base.StateHasChanged();
-    }
+		isLoading = false;
+		base.StateHasChanged();
+	}
 
-    private int getVisitorTeamEventCount(int eventId)
-    {
-        if (visitorStats.Count != 0)
-        {
-            return visitorStats.Where(c => c.EventId == eventId).FirstOrDefault().Count;
-        }
+	private int getVisitorTeamEventCount(int eventId)
+	{
+		if (visitorStats.Count != 0)
+		{
+			return visitorStats.Where(c => c.EventId == eventId).FirstOrDefault().Count;
+		}
 
-        return 0;
-    }
+		return 0;
+	}
 
-    private void ClubDetails(int id)
-    {
-        navigationManager.NavigateTo($"/clubs/{id}");
-    }
+	private void ClubDetails(int id)
+	{
+		navigationManager.NavigateTo($"/clubs/{id}");
+	}
 
-    private async Task LoadStatistics(int gameId)
-    {
-        var statistics = await gameService.GetGameStatistics(gameId);
-        var events = await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetEvents(null);
+	private async Task LoadStatistics(int gameId)
+	{
+		var statistics = await gameService.GetGameStatistics(gameId);
+		var events = await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetEvents(null);
 
-        if (statistics != null)
-        {
-            foreach (Event e in events)
-            {
-                foreach (ClubStat stat in statistics)
-                {
-                    if (stat.EventId == e.Id)
-                    {
-                        if (homeTeam.Id == stat.ClubId)
-                        {
-                            homeStats.Add(new StatsTable(stat, e));
-                        }
-                        else if (visitorTeam.Id == stat.ClubId)
-                        {
-                            visitorStats.Add(new StatsTable(stat, e));
-                        }
-                    }
-                }
-            }
-        }
-    }
+		if (statistics != null)
+		{
+			foreach (Event e in events)
+			{
+				foreach (ClubStat stat in statistics)
+				{
+					if (stat.EventId == e.Id)
+					{
+						if (homeTeam.Id == stat.ClubId)
+						{
+							homeStats.Add(new StatsTable(stat, e));
+						}
+						else if (visitorTeam.Id == stat.ClubId)
+						{
+							visitorStats.Add(new StatsTable(stat, e));
+						}
+					}
+				}
+			}
+		}
+	}
 
-    private async Task SaveClicked()
-    {
-        var response = await gameService.UpdateGame(gameData.Game);
+	private async Task SaveClicked()
+	{
+		var response = await gameService.UpdateGame(gameData.Game);
 
-        if (response.IsSuccessStatusCode)
-        {
-            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_UPDATED, "Game"));
-            isEditing = false;
-        }
-        else
-        {
-            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
-        }
-    }
+		if (response.IsSuccessStatusCode)
+		{
+			toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_UPDATED, "Game"));
+			isEditing = false;
+		}
+		else
+		{
+			toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+		}
+	}
 
-    private async Task DeleteClicked()
-    {
-        var response = await gameService.DeleteGame(int.Parse(Id));
+	private async Task DeleteClicked()
+	{
+		var response = await gameService.DeleteGame(int.Parse(Id));
 
-        if (response.IsSuccessStatusCode)
-        {
-            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Game"));
-            Task.Delay(3000).Wait();
-            navigationManager.NavigateTo($"/games");
-        }
-        else
-        {
-            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
-        }
-    }
+		if (response.IsSuccessStatusCode)
+		{
+			toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Game"));
+			Task.Delay(3000).Wait();
+			navigationManager.NavigateTo($"/games");
+		}
+		else
+		{
+			toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+		}
+	}
 
-    private async Task FavoriteToogle()
-    {
-        var response = await favoritesService.ToogleFavorite(new Favorite(int.Parse(Id)));
+	private async Task FavoriteToogle()
+	{
+		var response = await favoritesService.ToogleFavorite(new Favorite(int.Parse(Id)));
 
-        if (response.IsSuccessStatusCode)
-        {
-            toastService.ShowToast(ToastLevel.Success, ConstValues.MSG_GENERIC_UPDATED);
-            isEditing = false;
-        }
-        else
-        {
-            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
-        }
-    }
+		if (response.IsSuccessStatusCode)
+		{
+			toastService.ShowToast(ToastLevel.Success, ConstValues.MSG_GENERIC_UPDATED);
+			isEditing = false;
+		}
+		else
+		{
+			toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+		}
+	}
 }

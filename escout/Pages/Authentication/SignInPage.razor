@@ -2,82 +2,99 @@
 
 @if (isLoading)
 {
-    <div class="spinner"></div>
+	<div class="spinner"></div>
 }
 else
 {
-    <body class="text-center">
-        <div class="form-signin">
-            <img class="mb-4" src="/images/escout-logo_icon-BLUE.svg" alt="" width="150" height="150">
-            <h1 class="h3 mb-3 font-weight-normal">Sign In</h1>
-            <input type="text" class="form-control" placeholder="Username" @bind-value="user.Username" required autofocus>
-            <input type="password" class="form-control" placeholder="Password" @bind-value="user.Password" required>
-            <div class="checkbox mb-3">
-                <label>
-                    <input type="checkbox" value="remember-me"> Remember me
-                </label>
-            </div>
-            <button class="btn btn-lg btn-primary btn-block" @onclick="SignInClicked">Sign in</button>
-            <button class="btn btn-lg btn-secondary btn-block" @onclick="SignUpClicked">Sign up</button>
-            <br />
-            <label class="btn-link" @onclick="ForgotPasswordClicked">Forgot Password?</label><br />
-            <label class="btn-link" @onclick="AboutClicked">About</label>
-        </div>
-    </body>
+	<div class="form-signin text-center">
+		<div class="mb-1">
+			<img src="/images/escout-logo_icon-BLUE.svg" alt="" style="width:10rem;">
+		</div>
+		<div class="row">
+			<h1 class="h3 mb-3 font-weight-normal">Sign In</h1>
+		</div>
+
+		<EditForm Model="@user" OnValidSubmit="SignInClicked">
+			<div class="row col mb-1">
+				<input @bind-value="user.Username" placeholder="Username" type="text" class="form-control" required autofocus />
+			</div>
+			<div class="row col mb-1">
+				<input @bind-value="user.Password" placeholder="Password" type="password" class="form-control" required />
+			</div>
+			<div class="row mb-3">
+				<label>
+					<input class="form-check-input" type="checkbox" value="remember-me"> Remember me
+				</label>
+			</div>
+			<div class="row mb-1">
+				<button value="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
+			</div>
+		</EditForm>
+
+		<div class="row mb-1">
+			<button class="btn btn-lg btn-secondary btn-block" @onclick="SignUpClicked">Sign up</button>
+		</div>
+		<div class="row">
+			<button class="btn btn-link" @onclick="ForgotPasswordClicked">Forgot Password?</button>
+		</div>
+		<div class="row">
+			<button class="btn btn-link" @onclick="AboutClicked">About</button>
+		</div>
+	</div>
 }
 
 @code {
-    [CascadingParameter]
-    BlazoredModalInstance BlazoredModal { get; set; }
+	[CascadingParameter]
+	BlazoredModalInstance BlazoredModal { get; set; }
 
-    private bool isLoading = false;
-    private User user = new User();
+	private bool isLoading = false;
+	private User user = new User();
 
-    private void AboutClicked()
-    {
-        Modal.Show<AboutPage>("About:");
-    }
+	private void AboutClicked()
+	{
+		Modal.Show<AboutPage>("About:");
+	}
 
-    private void SignUpClicked()
-    {
-        Modal.Show<SignUpPage>("Sign Up");
-    }
+	private void SignUpClicked()
+	{
+		Modal.Show<SignUpPage>("Sign Up");
+	}
 
-    private void ForgotPasswordClicked()
-    {
-        Modal.Show<ForgotPasswordPage>("Forgot Password");
-    }
+	private void ForgotPasswordClicked()
+	{
+		Modal.Show<ForgotPasswordPage>("Forgot Password");
+	}
 
-    private async Task SignInClicked()
-    {
-        isLoading = true;
+	private async Task SignInClicked()
+	{
+		isLoading = true;
 
-        if (!string.IsNullOrEmpty(user.Username) || !string.IsNullOrEmpty(user.Password))
-        {
-            var response = await new RestConnector().PostObjectAsync(RestConstValues.SIGN_IN,
-                new User(user.Username, RestUtils.GenerateSha256String(user.Password), string.Empty, 0));
+		if (!string.IsNullOrEmpty(user.Username) || !string.IsNullOrEmpty(user.Password))
+		{
+			var response = await new RestConnector().PostObjectAsync(RestConstValues.SIGN_IN,
+				new User(user.Username, RestUtils.GenerateSha256String(user.Password), string.Empty, 0));
 
-            if (response.IsSuccessStatusCode)
-            {
-                var auth = JsonConvert.DeserializeObject<AuthData>(await response.Content.ReadAsStringAsync());
+			if (response.IsSuccessStatusCode)
+			{
+				var auth = JsonConvert.DeserializeObject<AuthData>(await response.Content.ReadAsStringAsync());
 
-                await localStorage.SetItemAsync(ConstValues.TOKEN, auth.Token);
-                await localStorage.SetItemAsync(ConstValues.USER_ID, auth.Id);
+				await localStorage.SetItemAsync(ConstValues.TOKEN, auth.Token);
+				await localStorage.SetItemAsync(ConstValues.USER_ID, auth.Id);
 
-                toastService.ShowSuccess(ConstValues.MSG_WELCOME);
-                Task.Delay(3000).Wait();
-                navigationManager.NavigateTo($"/");
-            }
-            else
-            {
-                toastService.ShowError(await response.Content.ReadAsStringAsync());
-            }
-        }
-        else
-        {
-            toastService.ShowError(ConstValues.MSG_FILL_USER_PASSWORD);
-        }
+				toastService.ShowSuccess(ConstValues.MSG_WELCOME);
+				Task.Delay(3000).Wait();
+				navigationManager.NavigateTo($"/");
+			}
+			else
+			{
+				toastService.ShowError(await response.Content.ReadAsStringAsync());
+			}
+		}
+		else
+		{
+			toastService.ShowError(ConstValues.MSG_FILL_USER_PASSWORD);
+		}
 
-        isLoading = false;
-    }
+		isLoading = false;
+	}
 }
