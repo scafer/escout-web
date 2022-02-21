@@ -1,7 +1,7 @@
 # eScout - Web
 
 <a href="#">
-    <img src="escout/wwwroot/images/escout-logo_icon-BLUE.svg" align="right" width="10%" height="10%"/>
+    <img src="escout/wwwroot/media/images/escout-logo_icon-BLUE.svg" align="right" width="10%" height="10%"/>
 </a>
 
 **By:** Sandro Ferreira - Jun. 17, 2020
