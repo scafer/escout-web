@@ -1,23 +1,27 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="sidebar">
-	<NavMenu />
-</div>
+<PageTitle>escout</PageTitle>
 
-<div class="main">
-	<div class="top-row px-4">
-		<button @onclick="SignOutClicked" class="btn btn-dark">Sign Out</button>
-	</div>
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
 
-	<div class="content px-4">
-		@Body
-	</div>
-</div>
+    <main>
+        <div class="top-row px-4">
+            <button @onclick="SignOutClicked" class="btn btn-dark">Sign Out</button>
+        </div>
 
-<BlazoredToasts Position="ToastPosition.BottomRight"
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+
+	<BlazoredToasts Position="ToastPosition.BottomRight"
 				Timeout="5"
 				IconType="IconType.FontAwesome"
 				ShowProgressBar="true" />
+</div>
 
 @code {
 	protected override Task OnInitializedAsync()

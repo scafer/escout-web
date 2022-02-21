@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29613.14
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "escout", "escout.csproj", "{C2B342F1-42E7-4811-B5DD-7AE7D1AFF955}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "escout", "escout.csproj", "{C14C41A2-74D6-433A-B999-B2E4BEF2F65F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C2B342F1-42E7-4811-B5DD-7AE7D1AFF955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2B342F1-42E7-4811-B5DD-7AE7D1AFF955}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2B342F1-42E7-4811-B5DD-7AE7D1AFF955}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2B342F1-42E7-4811-B5DD-7AE7D1AFF955}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C14C41A2-74D6-433A-B999-B2E4BEF2F65F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C14C41A2-74D6-433A-B999-B2E4BEF2F65F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C14C41A2-74D6-433A-B999-B2E4BEF2F65F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C14C41A2-74D6-433A-B999-B2E4BEF2F65F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {2137F2B6-CBBB-49B6-9F12-804A2EA147CE}
+		SolutionGuid = {0CE7FF4C-FC38-48D9-B5BA-AD189EE57306}
 	EndGlobalSection
 EndGlobal

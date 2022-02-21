@@ -4,7 +4,10 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
+
+@using Newtonsoft.Json
 
 @using escout
 @using escout.Shared
@@ -24,9 +27,8 @@
 @using Blazored.Modal
 @using Blazored.Modal.Services
 
-@using Newtonsoft.Json
+@inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
 
 @inject IModalService Modal
 @inject IToastService toastService
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
-@inject Microsoft.AspNetCore.Components.NavigationManager navigationManager

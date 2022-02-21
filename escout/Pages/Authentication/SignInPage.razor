@@ -6,9 +6,10 @@
 }
 else
 {
-	<div class="form-signin text-center">
+	<center>
+			<div class="form-signin text-center" style="max-width: 20em">
 		<div class="mb-1">
-			<img src="/images/escout-logo_icon-BLUE.svg" alt="" style="width:10rem;">
+			<img src="/media/images/escout-logo_icon-BLUE.svg" alt="" style="width:10rem;">
 		</div>
 		<div class="row">
 			<h1 class="h3 mb-3 font-weight-normal">Sign In</h1>
@@ -41,12 +42,10 @@ else
 			<button class="btn btn-link" @onclick="AboutClicked">About</button>
 		</div>
 	</div>
+	</center>
 }
 
 @code {
-	[CascadingParameter]
-	BlazoredModalInstance BlazoredModal { get; set; }
-
 	private bool isLoading = false;
 	private User user = new User();
 

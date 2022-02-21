@@ -26,7 +26,7 @@ namespace escout.Helpers
         public const string MSG_ERROR_CREATING_OBJECT = "Couldn't create new {0}.";
 
         public const string OPTION_GENERIC_SELECT = "Select...";
-        public const string IMAGE_PATH_SVG = "/images/{0}.svg";
+        public const string IMAGE_PATH_SVG = "/media/images/{0}.svg";
 
         public static readonly Dictionary<int, string> PositionKeys = new Dictionary<int, string>
         {

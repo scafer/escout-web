@@ -1,54 +1,56 @@
-﻿<div class="top-row px-4 navbar navbar-dark text-center">
-	<a class="navbar-brand" href="">
-		<i>eScout - Web</i>
-	</a>
-	<button class="navbar-toggler" @onclick="ToggleNavMenu">
-		<span class="navbar-toggler-icon"></span>
-	</button>
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">
+			<i>eScout - Web</i>
+		</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-	<ul class="nav flex-column">
-		<li class="nav-item px-3">
-			<NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-				<span class="oi oi-home" aria-hidden="true"></span> Home
-			</NavLink>
-		</li>
-		<li class="nav-item px-3">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+		<div class="nav-item px-3">
 			<NavLink class="nav-link" href="events">
 				<span class="oi oi-list-rich" aria-hidden="true"></span> Events
 			</NavLink>
-		</li>
-		<li class="nav-item px-3">
+		</div>
+		<div class="nav-item px-3">
 			<NavLink class="nav-link" href="games">
 				<span class="oi oi-list-rich" aria-hidden="true"></span> Games
 			</NavLink>
-		</li>
-		<li class="nav-item px-3">
+		</div>
+		<div class="nav-item px-3">
 			<NavLink class="nav-link" href="clubs">
 				<span class="oi oi-list-rich" aria-hidden="true"></span> Clubs
 			</NavLink>
-		</li>
-		<li class="nav-item px-3">
+		</div>
+		<div class="nav-item px-3">
 			<NavLink class="nav-link" href="athletes">
 				<span class="oi oi-list-rich" aria-hidden="true"></span> Athletes
 			</NavLink>
-		</li>
-		<li class="nav-item px-3">
+		</div>
+		<div class="nav-item px-3">
 			<NavLink class="nav-link" href="boards">
 				<span class="oi oi-list-rich" aria-hidden="true"></span> Boards
 			</NavLink>
-		</li>
-	</ul>
+		</div>
+    </nav>
 </div>
 
 @code {
-	private bool collapseNavMenu = true;
+    private bool collapseNavMenu = true;
 
-	private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-	private void ToggleNavMenu()
-	{
-		collapseNavMenu = !collapseNavMenu;
-	}
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
 }

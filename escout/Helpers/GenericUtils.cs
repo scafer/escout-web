@@ -6,7 +6,7 @@ namespace escout.Helpers
     {
         public static string GetImageUrl(string eventKey)
         {
-            return string.Format("/images/timeline/timeline_{0}.svg", eventKey);
+            return string.Format("/media/images/timeline/timeline_{0}.svg", eventKey);
         }
 
         public static string GetDisplayOptionFromDictionary(Dictionary<string, string> displayOptions, string key, string defaultValue)
