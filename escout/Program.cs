@@ -1,6 +1,6 @@
+using Blazored.LocalStorage;
 using Blazored.Modal;
 using Blazored.Toast;
-using Blazored.LocalStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 

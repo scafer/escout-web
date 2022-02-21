@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using escout.Models.Rest.GameObjects;
+﻿using escout.Models.Rest.GameObjects;
 using escout.Models.Rest.GameStatistics;
 using escout.Models.Rest.GenericObjects;
 using escout.Services.Rest;

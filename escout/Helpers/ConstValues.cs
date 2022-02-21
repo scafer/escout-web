@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace escout.Helpers
+﻿namespace escout.Helpers
 {
     public class ConstValues
     {

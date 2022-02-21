@@ -123,7 +123,7 @@ else
 											}
 											else
 											{
-												<td><input @bind-value="club.Homepage" /></td>
+												<td><input @bind-value="club.Homepage" class="form-control"/></td>
 											}
 										</tr>
 										<tr>
@@ -134,7 +134,7 @@ else
 											}
 											else
 											{
-												<td><input @bind-value="club.Stadium" /></td>
+												<td><input @bind-value="club.Stadium" class="form-control"/></td>
 											}
 										</tr>
 										<tr>
@@ -145,7 +145,7 @@ else
 											}
 											else
 											{
-												<td><input @bind-value="club.Address" /></td>
+												<td><input @bind-value="club.Address" class="form-control"/></td>
 											}
 										</tr>
 									</tbody>
@@ -189,7 +189,7 @@ else
 										@foreach (var stat in stats)
 										{
 											<tr>
-												<td><img src="@GenericUtils.GetImageUrl(stat.EventKey)" alt="@stat.EventName" style="height:3rem;"></td>
+												<td><img src="@GenericUtils.GetImageUrl(stat.EventKey)" alt="@stat.EventName" style="height:2.5em;"></td>
 												<td>@stat.EventName</td>
 												<td>@stat.Count</td>
 												<td>@stat.Average</td>
