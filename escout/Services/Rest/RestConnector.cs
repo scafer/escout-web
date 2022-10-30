@@ -100,7 +100,7 @@ namespace escout.Services.Rest
 
         private static string GetApiUrl()
         {
-            return Environment.GetEnvironmentVariable("ESCOUT_SERVER_URL") ?? "https://escout-server.herokuapp.com";
+            return Environment.GetEnvironmentVariable("ESCOUT_SERVER_URL") ?? "https://escout-server.onrender.com";
         }
     }
 }
