@@ -1,9 +1,9 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using escout.Models.Rest.GameObjects;
+﻿using escout.Models.Rest.GameObjects;
 using escout.Models.Rest.GenericObjects;
 using escout.Services.Generic;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace escout.Services.Rest
 {
