@@ -1,0 +1,35 @@
+﻿@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+
+@using Newtonsoft.Json
+
+@using escout
+@using escout.Shared
+@using escout.Helpers
+@using escout.Models.Rest
+@using escout.Models.Rest.Authentication
+@using escout.Models.Rest.GameObjects
+@using escout.Models.Rest.GameStatistics
+@using escout.Models.Rest.GenericObjects
+@using escout.Services.Generic
+@using escout.Services.Rest
+
+@using Blazored
+@using Blazored.LocalStorage
+@using Blazored.Toast
+@using Blazored.Toast.Services
+@using Blazored.Toast.Configuration
+@using Blazored.Modal
+@using Blazored.Modal.Services
+
+@inject NavigationManager navigationManager
+
+@inject IModalService Modal
+@inject IToastService toastService
+@inject ILocalStorageService localStorage

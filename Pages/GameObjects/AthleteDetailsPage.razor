@@ -1,0 +1,368 @@
+﻿@page "/athletes/{id}"
+
+@if (isLoading)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="container-fluid">
+    <div class="row justify-content-end mb-2">
+        <div class="btn-group col-auto" role="group">
+            @if (!isEditing)
+            {
+                <button class="btn btn-outline-primary" @onclick="FavoriteToogle">Favorite</button>
+                <button class="btn btn-outline-dark" @onclick="IsEditingToggle">Edit</button>
+                <button class="btn btn-outline-danger" @onclick="DeleteClicked">Delete</button>
+            }
+            else
+            {
+                <button class="btn btn-outline-success" @onclick="SaveClicked">Save</button>
+                <button class="btn btn-outline-dark" @onclick="IsEditingToggle">Cancel</button>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-2">
+            <img class="bg-transparent img-thumbnail" src="@(image.ImageUrl)" alt="@(image.Description)" style="height:20rem;"/>
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col-*">
+                    <h3 class="font-weight-bold">@athlete.Name</h3>
+                    <h6 class="text-primary">@athlete.Fullname</h6>
+                    <h5>@clubName</h5>
+                    <div class="col-9">
+                        <hr/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <h4 class="font-weight-bold">Personal Details</h4>
+                    <div class="row">
+                        <div class="col-6">
+                            <table class="table table-borderless table-sm">
+                                <thead/>
+                                <tbody>
+                                <tr>
+                                    <th scope="row">Height:</th>
+                                    @if (!isEditing)
+                                    {
+                                        <td>@athlete.Height</td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input @bind-value="athlete.Height" class="form-control"/>
+                                        </td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <th scope="row">Weight:</th>
+                                    @if (!isEditing)
+                                    {
+                                        <td>@athlete.Weight</td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input @bind-value="athlete.Weight" class="form-control"/>
+                                        </td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <th scope="row">Position:</th>
+                                    @if (!isEditing)
+                                    {
+                                        <td>@athlete.Position</td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input @bind-value="athlete.Position" class="form-control"/>
+                                        </td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <th scope="row">Birth Date:</th>
+                                    @if (!isEditing)
+                                    {
+                                        <td>@athlete.BirthDate</td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input @bind-value="athlete.BirthDate" class="form-control"/>
+                                        </td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <th scope="row">Birth Place:</th>
+                                    @if (!isEditing)
+                                    {
+                                        <td>@athlete.BirthPlace</td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input @bind-value="athlete.BirthPlace" class="form-control"/>
+                                        </td>
+                                    }
+                                </tr>
+                                @if (isEditing)
+                                {
+                                    <tr>
+                                        <th scope="row">Club Id:</th>
+                                        <td>
+                                            <select @bind="athlete.ClubId" class="form-select">
+                                                @if (clubs != null)
+                                                {
+                                                    @foreach (var c in clubs)
+                                                    {
+                                                        <option value="@c.Id">@c.Name</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Position Key:</th>
+                                        <td>
+                                            <select @bind="athlete.PositionKey" class="form-select">
+                                                @if (ConstValues.PositionKeys != null)
+                                                {
+                                                    @foreach (var c in ConstValues.PositionKeys)
+                                                    {
+                                                        <option value="@c.Key">@c.Value</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h4 class="font-weight-bold">Career Details</h4>
+                    <div class="row">
+                        <div class="col-6">
+                            <table class="table table-borderless table-sm">
+                                <thead/>
+                                <tbody>
+                                <tr>
+                                    <th scope="row">Total games:</th>
+                                    <td>*</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Faults:</th>
+                                    <td>*</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Shots:</th>
+                                    <td>*</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Agent:</th>
+                                    @if (!isEditing)
+                                    {
+                                        <td>@athlete.Agent</td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input @bind-value="athlete.Agent" class="form-control"/>
+                                        </td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <th scope="row">Status:</th>
+                                    @if (!isEditing)
+                                    {
+                                        <td>@athlete.Status</td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input @bind-value="athlete.Status" class="form-control"/>
+                                        </td>
+                                    }
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <hr/>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionParent">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Statistics
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionParent">
+                <div class="accordion-body row">
+                    <div class="center mb-2">
+                        <button class="btn btn-warning" @onclick="LoadStatisticsClick">Load</button>
+                    </div>
+                    @if (stats.Count != 0)
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover align-middle">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Event Name</th>
+                                    <th>Count</th>
+                                    <th>Average</th>
+                                    <th>Standard Deviation</th>
+                                    <th>Median</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var stat in stats)
+                                {
+                                    <tr>
+                                        <td>
+                                            <img src="@GenericUtils.GetImageUrl(stat.EventKey)" alt="@stat.EventName" style="height:2.5rem;">
+                                        </td>
+                                        <td>@stat.EventName</td>
+                                        <td>@stat.Count</td>
+                                        <td>@stat.Average</td>
+                                        <td>@stat.StandardDeviation</td>
+                                        <td>@stat.Median</td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    private bool isLoading = true;
+    private bool isEditing;
+
+    private string clubName;
+    private Image image = new();
+    private AthleteService athletesService;
+    private FavoritesService favoritesService;
+    private Athlete athlete = new();
+    private readonly List<Club> clubs = new();
+    private List<StatsTable> stats = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Start(Id);
+    }
+
+    private async void Start(string athleteId)
+    {
+        favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+        athletesService = new AthleteService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+
+        athlete = await athletesService.GetAthleteById(int.Parse(athleteId));
+        image = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(athlete.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "athlete_fill-BLUE")) };
+        clubName = GenericUtils.GetDisplayOptionFromDictionary(athlete.DisplayOptions, "clubName", ConstValues.MSG_ATHLETE_WITHOUT_CLUB);
+
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    private void IsEditingToggle()
+    {
+        isEditing = isEditing ? false : true;
+    }
+
+    private async Task FavoriteToogle()
+    {
+        var response = await favoritesService.ToogleFavorite(new Favorite(int.Parse(Id)));
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, ConstValues.MSG_GENERIC_UPDATED);
+            isEditing = false;
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+    }
+
+    private async Task LoadStatisticsClick()
+    {
+        var statistics = await athletesService.GetAthleteStatistics(athlete.Id, null);
+        var events = await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetEvents(null);
+        stats = new List<StatsTable>();
+
+        if (statistics.TotalStats != null)
+        {
+            foreach (var e in events)
+            {
+                foreach (var stat in statistics.TotalStats)
+                {
+                    if (stat.EventId == e.Id)
+                    {
+                        stats.Add(new StatsTable(stat, e));
+                    }
+                }
+            }
+        }
+    }
+
+    private async Task SaveClicked()
+    {
+        var response = await athletesService.UpdateAthlete(athlete);
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_UPDATED, "Athlete"));
+            isEditing = false;
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+    }
+
+    private async Task DeleteClicked()
+    {
+        var response = await athletesService.DeleteAthlete(athlete.Id);
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Athlete"));
+            Task.Delay(3000).Wait();
+            navigationManager.NavigateTo("/athletes");
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+    }
+
+}

@@ -1,0 +1,139 @@
+﻿@if (isLoading)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="center">
+        <EditForm Model="@athlete" OnValidSubmit="@NewAthleteClicked">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Name:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="athlete.Name" placeholder="Name" class="form-control"/>
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Full Name:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="athlete.Fullname" placeholder="Full Name" class="form-control"/>
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Height:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputNumber @bind-Value="athlete.Height" placeholder="Height" class="form-control"/>
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Weight:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputNumber @bind-Value="athlete.Weight" placeholder="Weight" class="form-control"/>
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Position:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <InputText @bind-Value="athlete.Position" placeholder="Position" class="form-control"/>
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Position Key:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <select @bind="athlete.PositionKey" class="form-select">
+                        @if (ConstValues.PositionKeys != null)
+                        {
+                            @foreach (var c in ConstValues.PositionKeys)
+                            {
+                                <option value="@c.Key">@c.Value</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-5 font-weight-bold">
+                    <label class="label-right-align">Club:</label>
+                </div>
+                <div class="col-7 mb-1">
+                    <select @bind="athlete.ClubId" class="form-select">
+                        @if (clubs != null)
+                        {
+                            @foreach (var c in clubs)
+                            {
+                                <option value="@c.Id">@c.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <br/>
+            <div>
+                <button class="btn btn-primary" value="Save">Save</button>
+                <span>&nbsp;</span>
+                <button @onclick="Cancel" class="btn btn-secondary" value="Clear">Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    private bool isLoading;
+    public Athlete athlete = new();
+    public List<Club> clubs = new();
+    private AthleteService athletesService;
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; }
+
+    private void Cancel()
+    {
+        BlazoredModal.CancelAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Start();
+    }
+
+    private async void Start()
+    {
+        athletesService = new AthleteService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+        clubs.Add(new Club { Name = ConstValues.OPTION_GENERIC_SELECT });
+        clubs.AddRange(await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetClubs());
+        StateHasChanged();
+    }
+
+    private async Task NewAthleteClicked()
+    {
+        isLoading = true;
+        var response = await athletesService.CreateAthlete(athlete);
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_SAVED, "Athlete"));
+            await BlazoredModal.CloseAsync(ModalResult.Ok(true));
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, string.Format(ConstValues.MSG_ERROR_CREATING_OBJECT, "athlete"));
+        }
+
+        isLoading = false;
+    }
+
+}

@@ -7,6 +7,8 @@
 **By:** Sandro Ferreira - Jun. 17, 2020
 
 ## Summary
-**eScout - Web** is a cross-platform application, developed with Razor Framework, design to analyze registred events during a sport event.
+
+**eScout - Web** is a cross-platform application, developed with Razor Framework, design to analyze registred events
+during a sport event.
 
 **License:** [GPL 3.0](https://choosealicense.com/licenses/gpl-3.0/)

@@ -1,0 +1,62 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>escout</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu/>
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <button @onclick="SignOutClicked" class="btn btn-dark">Sign Out</button>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+
+    <BlazoredToasts Position="ToastPosition.BottomRight"
+                    Timeout="5"
+                    IconType="IconType.FontAwesome"
+                    ShowProgressBar="true"/>
+</div>
+
+@code {
+
+    protected override Task OnInitializedAsync()
+    {
+        _ = Start();
+        return base.OnInitializedAsync();
+    }
+
+    private async Task Start()
+    {
+        var token = await localStorage.GetItemAsync<string>(ConstValues.TOKEN);
+
+        if (string.IsNullOrEmpty(token))
+        {
+            navigationManager.NavigateTo("/signIn");
+        }
+
+        else if (!string.IsNullOrEmpty(token))
+        {
+            var response = await new RestConnector(token).GetObjectAsync(RestConstValues.AUTHENTICATED);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                navigationManager.NavigateTo("/signIn");
+            }
+        }
+    }
+
+    public async Task SignOutClicked()
+    {
+        await localStorage.SetItemAsync(ConstValues.TOKEN, string.Empty);
+        toastService.ShowToast(ToastLevel.Info, "You are no longer authenticated");
+        Task.Delay(3000).Wait();
+        navigationManager.NavigateTo("/SignIn");
+    }
+
+}

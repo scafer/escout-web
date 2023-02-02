@@ -1,0 +1,101 @@
+﻿@page "/boards"
+
+<h3>Boards</h3>
+
+<EditForm Model="@searchQuery" OnValidSubmit="@SearchClicked">
+    <div class="form-group row g-1">
+        <div class="col-md-2">
+            <InputSelect @bind-Value="searchQuery.FieldName" class="form-select">
+                <option value="">Select...</option>
+                <option value="name">Name</option>
+                <option value="edition">Fullname</option>
+                <option value="favorites">Favorites</option>
+            </InputSelect>
+        </div>
+        <div class="col">
+            <InputText @bind-Value="searchQuery.Value" placeholder="Search..." class="form-control"/>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" value="submit">Search</button>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" @onclick="NewBoardClicked">New</button>
+        </div>
+    </div>
+</EditForm>
+
+<br/>
+
+@if (isLoading)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Edition</th>
+                <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var competition in competitions)
+            {
+                <tr>
+                    <td>@competition.Id</td>
+                    <td>@competition.Name</td>
+                    <td>@competition.Edition</td>
+                    <td>
+                        <button @onclick="@(() => BoardDetails(competition))" class="btn btn-secondary">+</button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private bool isLoading = true;
+    private BoardsService boardsService;
+    private List<Competition> competitions;
+    private readonly SearchQuery searchQuery = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Start();
+    }
+
+    private async void Start()
+    {
+        boardsService = new BoardsService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+        competitions = await boardsService.SearchExecuted(null, null);
+        competitions = competitions.OrderBy(c => c.Id).ToList();
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    private void NewBoardClicked()
+    {
+        Modal.Show<NewCompetitionPage>(string.Format(ConstValues.MSG_GENERIC_OBJECT_NEW, "Competition"));
+    }
+
+    private async Task SearchClicked()
+    {
+        isLoading = true;
+        competitions = await boardsService.SearchExecuted(searchQuery.FieldName, searchQuery.Value);
+        competitions = competitions.OrderBy(c => c.Id).ToList();
+        isLoading = false;
+    }
+
+    private void BoardDetails(Competition competition)
+    {
+        navigationManager.NavigateTo($"/boards/{competition.Id}");
+    }
+
+}

@@ -1,0 +1,392 @@
+﻿@page "/boards/{id}"
+
+@if (isLoading)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="container-fluid">
+    <div class="row justify-content-end mb-2">
+        <div class="btn-group col-auto" role="group">
+            @if (!isEditing)
+            {
+                <button class="btn btn-outline-primary" @onclick="FavoriteToogle">Favorite</button>
+                <button class="btn btn-outline-dark" @onclick="IsEditingToggle">Edit</button>
+                <button class="btn btn-outline-danger" @onclick="DeleteClicked">Delete</button>
+            }
+            else
+            {
+                <button class="btn btn-outline-success" @onclick="SaveClicked">Save</button>
+                <button class="btn btn-outline-dark" @onclick="IsEditingToggle">Cancel</button>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-2">
+            <img class="bg-transparent img-thumbnail" src="@(image.ImageUrl)" alt="@(image.Description)" style="height:20rem;"/>
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col-*">
+                    <h3 class="font-weight-bold">@competition.Name</h3>
+                    <h5></h5>
+                    <h6 class="text-primary">@competition.Edition</h6>
+                    <div class="col-9">
+                        <hr/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <h4 class="font-weight-bold">Competition Details</h4>
+                    <div class="row ms-1">
+                        <table class="table table-borderless table-sm">
+                            <thead/>
+                            <tbody>
+                            <tr>
+                                <th scope="row">Name:</th>
+                                @if (!isEditing)
+                                {
+                                    <td>@competition.Name</td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input @bind-value="competition.Name" class="form-control"/>
+                                    </td>
+                                }
+                            </tr>
+                            <tr>
+                                <th scope="row">Edition:</th>
+                                @if (!isEditing)
+                                {
+                                    <td>@competition.Edition</td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input @bind-value="competition.Edition" class="form-control"/>
+                                    </td>
+                                }
+                            </tr>
+                            <tr>
+                                <th scope="row">Total games:</th>
+                                <td>*</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Faults:</th>
+                                <td>*</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Shots:</th>
+                                <td>*</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <hr/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h3 class="font-weight-bold">Competition Board</h3>
+        </div>
+        <div class="col-12 table-responsive">
+            <table class="table table-sm table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Club Name</th>
+                    <th>Points</th>
+                    <th>Played</th>
+                    <th>Won</th>
+                    <th>Drawn</th>
+                    <th>Lost</th>
+                    <th>Goals For</th>
+                    <th>Goals Against</th>
+                    <th>Goals Difference</th>
+                    @if (isEditing)
+                    {
+                        <th>Delete</th>
+                    }
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var board in competitionBoard)
+                {
+                    <tr>
+                        @if (!isEditing)
+                        {
+                            <td>@board.Position</td>
+                            <td>@board.DisplayOptions.GetValueOrDefault("clubName")</td>
+                            <td>@board.Points</td>
+                            <td>@board.Played</td>
+                            <td>@board.Won</td>
+                            <td>@board.Drawn</td>
+                            <td>@board.Lost</td>
+                            <td>@board.GoalsFor</td>
+                            <td>@board.GoalsAgainst</td>
+                            <td>@board.GoalsDifference</td>
+                        }
+                        else
+                        {
+                            <td>
+                                <input @bind-value="board.Position" class="form-control"/>
+                            </td>
+                            <td>@board.DisplayOptions.GetValueOrDefault("clubName")</td>
+                            <td>
+                                <input @bind-value="board.Points" class="form-control"/>
+                            </td>
+                            <td>
+                                <input @bind-value="board.Played" class="form-control"/>
+                            </td>
+                            <td>
+                                <input @bind-value="board.Won" class="form-control"/>
+                            </td>
+                            <td>
+                                <input @bind-value="board.Drawn" class="form-control"/>
+                            </td>
+                            <td>
+                                <input @bind-value="board.Lost" class="form-control"/>
+                            </td>
+                            <td>
+                                <input @bind-value="board.GoalsFor" class="form-control"/>
+                            </td>
+                            <td>
+                                <input @bind-value="board.GoalsAgainst" class="form-control"/>
+                            </td>
+                            <td>
+                                <input @bind-value="board.GoalsDifference" class="form-control"/>
+                            </td>
+                            <td>
+                                <button @onclick="@(() => RemoveCompetitionBoardEntryClicked(board))" class="btn btn-danger">-</button>
+                            </td>
+                        }
+                    </tr>
+                }
+                </tbody>
+            </table>
+            @if (isEditing)
+            {
+                <div class="col-12">
+                    <h4 class="font-weight-bold">New Entry</h4>
+                </div>
+                <table class="table table-sm align-middle">
+                    <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Club Name</th>
+                        <th>Points</th>
+                        <th>Played</th>
+                        <th>Won</th>
+                        <th>Drawn</th>
+                        <th>Lost</th>
+                        <th>Goals For</th>
+                        <th>Goals Against</th>
+                        <th>Goals Difference</th>
+                        <th>Save</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <input @bind-value="boardEntry.Position" class="form-"/>
+                        </td>
+                        <td>
+                            <select @bind="boardEntry.ClubId" class="form-select">
+                                @if (clubs != null)
+                                {
+                                    @foreach (var c in clubs)
+                                    {
+                                        <option value="@c.Id">@c.Name</option>
+                                    }
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <input @bind-value="boardEntry.Points" class="form-control"/>
+                        </td>
+                        <td>
+                            <input @bind-value="boardEntry.Played" class="form-control"/>
+                        </td>
+                        <td>
+                            <input @bind-value="boardEntry.Won" class="form-control"/>
+                        </td>
+                        <td>
+                            <input @bind-value="boardEntry.Drawn" class="form-control"/>
+                        </td>
+                        <td>
+                            <input @bind-value="boardEntry.Lost" class="form-control"/>
+                        </td>
+                        <td>
+                            <input @bind-value="boardEntry.GoalsFor" class="form-control"/>
+                        </td>
+                        <td>
+                            <input @bind-value="boardEntry.GoalsAgainst" class="form-control"/>
+                        </td>
+                        <td>
+                            <input @bind-value="boardEntry.GoalsDifference" class="form-control"/>
+                        </td>
+                        <td>
+                            <button @onclick="@(() => CreateCompetitionBoardEntryClicked())" class="btn btn-success col-lg">+</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    private bool isLoading = true;
+    private bool isEditing;
+
+    private BoardsService boardsService;
+    private FavoritesService favoritesService;
+    private Image image = new();
+    public List<Club> clubs = new();
+    private Competition competition = new();
+    private CompetitionBoard boardEntry = new();
+    private List<CompetitionBoard> competitionBoard = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _ = Start(Id);
+        _ = LoadClubsList();
+    }
+
+    private async Task Start(string competitionId)
+    {
+        favoritesService = new FavoritesService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+        boardsService = new BoardsService(await localStorage.GetItemAsync<string>(ConstValues.TOKEN));
+
+        competition = await boardsService.GetCompetitionById(int.Parse(competitionId));
+        competitionBoard = await boardsService.GetCompetitionBoardById(int.Parse(competitionId));
+
+        competitionBoard = competitionBoard.OrderBy(c => c.Id).ToList();
+        image = new Image { ImageUrl = GenericUtils.GetDisplayOptionFromDictionary(competition.DisplayOptions, "imageUrl", string.Format(ConstValues.IMAGE_PATH_SVG, "competition_fill-BLUE")) };
+
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task SaveClicked()
+    {
+        var response = await boardsService.UpdateCompetition(competition);
+
+        foreach (var c in competitionBoard)
+        {
+            _ = boardsService.UpdateCompetitionBoard(c);
+        }
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_UPDATED, "Competition"));
+            isEditing = false;
+        }
+    }
+
+    private async Task CreateCompetitionBoardEntryClicked()
+    {
+        boardEntry.CompetitionId = competition.Id;
+        var response = await boardsService.CreateCompetitionBoard(boardEntry);
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_CREATED, "Entry"));
+            competitionBoard.Add(JsonConvert.DeserializeObject<List<CompetitionBoard>>(await response.Content.ReadAsStringAsync())[0]);
+            boardEntry = new CompetitionBoard();
+            StateHasChanged();
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+    }
+
+
+    private async Task DeleteClicked()
+    {
+        var response = await boardsService.DeleteCompetition(competition.Id);
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Competition"));
+            Task.Delay(3000).Wait();
+            navigationManager.NavigateTo("/boards");
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+    }
+
+    private async Task RemoveCompetitionBoardEntryClicked(CompetitionBoard entry)
+    {
+        var response = await boardsService.DeleteCompetitionBoard(entry.Id);
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, string.Format(ConstValues.MSG_GENERIC_OBJECT_DELETED, "Entry"));
+            competitionBoard.Remove(entry);
+            StateHasChanged();
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+    }
+
+    private async Task FavoriteToogle()
+    {
+        var response = await favoritesService.ToogleFavorite(new Favorite(int.Parse(Id)));
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(ToastLevel.Success, ConstValues.MSG_GENERIC_UPDATED);
+            isEditing = false;
+        }
+        else
+        {
+            toastService.ShowToast(ToastLevel.Error, ConstValues.MSG_GENERIC_ERROR);
+        }
+    }
+
+    private void ClubDetails(int id)
+    {
+        navigationManager.NavigateTo($"/clubs/{id}");
+    }
+
+    private void IsEditingToggle()
+    {
+        isEditing = isEditing ? false : true;
+    }
+
+    private async Task LoadClubsList()
+    {
+        clubs.Add(new Club { Name = ConstValues.OPTION_GENERIC_SELECT });
+        clubs.AddRange(await new RestUtils(await localStorage.GetItemAsync<string>(ConstValues.TOKEN)).GetClubs());
+    }
+
+}
